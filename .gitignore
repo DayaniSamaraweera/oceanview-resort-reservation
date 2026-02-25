@@ -1,0 +1,93 @@
+# ============================================
+# Ocean View Resort - .gitignore
+# ============================================
+
+# --------------------------------------------
+# Maven
+# --------------------------------------------
+target/
+pom.xml.tagdir/
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+.mvn/wrapper/maven-wrapper.jar
+
+# --------------------------------------------
+# Eclipse IDE
+# --------------------------------------------
+.project
+.classpath
+.settings/
+bin/
+.metadata/
+*.tmp
+*.bak
+*.swp
+*~.nib
+local.properties
+.loadpath
+.recommenders/
+
+# --------------------------------------------
+# IntelliJ IDEA
+# --------------------------------------------
+.idea/
+*.iml
+out/
+
+# --------------------------------------------
+# Compiled Class Files
+# --------------------------------------------
+*.class
+*.jar
+*.war
+*.ear
+
+# --------------------------------------------
+# Apache Tomcat - NEVER push!
+# --------------------------------------------
+apache-tomcat-*/
+tomcat/
+catalina.out
+Servers/
+
+# --------------------------------------------
+# Log Files
+# --------------------------------------------
+*.log
+
+# --------------------------------------------
+# OS Generated Files
+# --------------------------------------------
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# --------------------------------------------
+# Package Files
+# --------------------------------------------
+*.zip
+*.tar.gz
+*.rar
+
+# --------------------------------------------
+# Virtual Environment
+# --------------------------------------------
+.env
+.venv
+
+# --------------------------------------------
+# Backup Files
+# --------------------------------------------
+*.bak
+*.old
+*.orig
