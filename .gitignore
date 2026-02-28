@@ -1,6 +1,9 @@
-# ============================================
-# Ocean View Resort - .gitignore
-# ============================================
+# ================================================
+# Ocean View Resort - Online Room Reservation System
+# Student: Imasha Samaraweera
+# Module: CIS6003 - Advanced Programming
+# Cardiff Metropolitan University - 2025
+# ================================================
 
 # --------------------------------------------
 # Maven
@@ -80,7 +83,7 @@ desktop.ini
 *.rar
 
 # --------------------------------------------
-# Virtual Environment
+# Environment Variables
 # --------------------------------------------
 .env
 .venv

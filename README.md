@@ -22,7 +22,7 @@ This web-based application streamlines the room booking process for Ocean View R
 ### Core Technologies
 
 **Backend Development**
-- Java 11
+- Java 17
 - Apache Tomcat 9.0
 - JDBC for database connectivity
 
@@ -68,12 +68,14 @@ This application follows a **3-Tier Architecture**:
 
 1. **User Authentication System**
    - Secure login/logout mechanism
+   - User registration
    - Session management
 
 2. **Reservation Management**
    - Create new bookings
    - Store guest information (name, address, contact)
    - Select room types and dates
+   - Check-out and cancel reservations
 
 3. **Information Display**
    - View detailed reservation information
@@ -83,48 +85,54 @@ This application follows a **3-Tier Architecture**:
    - Automated bill calculation
    - Print bill functionality
 
-5. **Help & Support**
+5. **Management Reports**
+   - Room occupancy report
+   - Revenue report
+   - Decision-making insights
+
+6. **Help & Support**
    - User guide for new staff members
    - System documentation
 
-6. **System Controls**
+7. **System Controls**
    - Safe exit mechanism
 
 ---
 
-## 📂 Directory Structure
+## Directory Structure
 oceanview-resort-reservation/
 │
 ├── .github/
 │ └── workflows/
-│ └── ci.yml # CI/CD Pipeline
+│ └── ci.yml
 │
 ├── src/
 │ ├── main/
 │ │ ├── java/
 │ │ │ └── com/oceanview/
-│ │ │ ├── model/ # Entity classes
-│ │ │ ├── dao/ # Data Access Objects
-│ │ │ ├── service/ # Business logic
-│ │ │ ├── controller/ # Servlets
-│ │ │ ├── filter/ # Authentication filter
-│ │ │ └── listener/ # Application listeners
+│ │ │ ├── model/
+│ │ │ ├── dao/
+│ │ │ ├── service/
+│ │ │ ├── controller/
+│ │ │ ├── filter/
+│ │ │ └── listener/
 │ │ │
-│ │ ├── resources/ # Configuration files
+│ │ ├── resources/
 │ │ │
 │ │ └── webapp/
 │ │ ├── WEB-INF/
-│ │ ├── css/ # Stylesheets
-│ │ ├── js/ # JavaScript files
-│ │ └── *.jsp # JSP pages
+│ │ ├── css/
+│ │ ├── js/
+│ │ ├── images/
+│ │ └── *.jsp
 │ │
 │ └── test/
-│ └── java/com/oceanview/ # JUnit test classes
+│ └── java/com/oceanview/
 │
 ├── .gitignore
 ├── README.md
-├── pom.xml # Maven configuration
-└── database_setup.sql # Database schema & data
+├── pom.xml
+└── database_setup.sql
 
 text
 
@@ -144,9 +152,9 @@ text
 - `GetAvailableRoomCount` - Returns number of vacant rooms
 
 **Database Triggers:**
+- `before_reservation_insert` - Validates data before insertion
 - `after_reservation_insert` - Post-booking operations
 - `after_reservation_update` - Handles booking modifications
-- `before_reservation_insert` - Validates data before insertion
 
 ---
 
@@ -155,7 +163,7 @@ text
 ### System Requirements
 
 Ensure the following are installed:
-- Java Development Kit (JDK) 11 or higher
+- Java Development Kit (JDK) 17 or higher
 - Apache Tomcat Server 9.0
 - MySQL Database Server 8.0
 - Apache Maven
@@ -167,20 +175,25 @@ Ensure the following are installed:
 git clone https://github.com/DayaniSamaraweera/oceanview-resort-reservation.git
 cd oceanview-resort-reservation
 
+
 2. Database Configuration
 
 Bash
 
 mysql -u root -p
 source database_setup.sql
+
+
 3. Update Database Credentials
+
 Edit src/main/java/com/oceanview/dao/DBConnection.java:
 
 Java
 
-private static final String DB_URL = "jdbc:mysql://localhost:3306/oceanview_db";
-private static final String USER = "your_username";
-private static final String PASS = "your_password";
+private static final String URL = "jdbc:mysql://localhost:3306/oceanview_resort";
+private static final String USERNAME = "root";
+private static final String PASSWORD = "your_password";
+
 
 4. Import to Eclipse
 
@@ -188,12 +201,12 @@ Open Eclipse IDE
 File → Import → Existing Maven Projects
 Select project folder
 Build project
-Deploy to Tomcat
+
+5. Deploy to Tomcat
 
 Right-click project → Run As → Run on Server
 Select Tomcat 9.0
 Application runs on http://localhost:8080/OceanViewResort
-
 Testing Methodology
 Test-Driven Development Approach
 This project implements TDD (Test-Driven Development) methodology:
@@ -202,16 +215,16 @@ Comprehensive unit tests using JUnit 4
 Automated test execution
 Test coverage for critical business logic
 Integration testing for database operations
-
 Running Tests:
-Bash
-mvn test
 
+Bash
+
+mvn test
 License & Usage
 This project is developed solely for academic purposes as part of the CIS6003 module at Cardiff Metropolitan University.
 
 Developer
-Dayani Imasha Samaraweera
+D.I.Samaraweera
 Cardiff Metropolitan University
 CIS6003 - Advanced Programming
 Final Year Project
