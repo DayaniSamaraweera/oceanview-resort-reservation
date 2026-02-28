@@ -97,7 +97,7 @@ This application follows a **3-Tier Architecture**:
 7. **System Controls**
    - Safe exit mechanism
 
----
+```
 
 ## Directory Structure
 oceanview-resort-reservation/
