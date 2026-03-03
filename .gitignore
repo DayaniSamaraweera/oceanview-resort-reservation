@@ -94,3 +94,6 @@ desktop.ini
 *.bak
 *.old
 *.orig
+
+# Eclipse Workspace Metadata - NEVER push!
+.metadata/

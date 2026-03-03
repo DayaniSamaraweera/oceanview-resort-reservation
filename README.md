@@ -1,88 +1,65 @@
-# 🏨 Ocean View Resort - Room Reservation System
+# Ocean View Resort - Online Room Reservation System
 
-> A comprehensive online reservation management system for Ocean View Resort, Galle, Sri Lanka
+A professional web-based hotel room reservation system developed for 
+Ocean View Resort, Galle, Sri Lanka.
 
 ---
 
-## About This Project
+## Project Information
 
-This web-based application streamlines the room booking process for Ocean View Resort, enabling efficient management of guest reservations, billing, and customer service operations.
-
-### Academic Information
-
-| Detail | Information |
-|--------|------------|
-| **Course Code** | CIS6003 - Advanced Programming |
-| **Institution** | Cardiff Metropolitan University |
-| **Developer** | D.I.Samaraweera |
-| **Academic Year** | Final Year, First Semester, 2025 |
+| Item | Details |
+|------|---------|
+| **Module** | CIS6003 - Advanced Programming |
+| **University** | Cardiff Metropolitan University |
+| **Student** | D.S. Samaraweera |
+| **Year** | Final Year - Semester 1 |
+| **System** | Online Room Reservation System |
 
 ---
 
 ## Technology Stack
 
-| Category | Technology |
-|----------|-----------|
-| **Language** | Java 11 |
-| **Server** | Apache Tomcat 9.0 |
+| Layer | Technology |
+|-------|------------|
+| **Language** | Java 17 |
+| **Server** | Apache Tomcat 9 |
 | **Database** | MySQL 8.0 |
 | **Build Tool** | Maven |
-| **Testing** | JUnit 4 |
-| **Frontend** | JSP, HTML, CSS, JavaScript |
+| **IDE** | Eclipse |
+| **Testing** | JUnit 4 + Mockito |
 | **Version Control** | Git & GitHub |
 | **CI/CD** | GitHub Actions |
 
 ---
 
-## System Architecture
+## Architecture
 
-This application follows a **3-Tier Architecture**:
-┌─────────────────────────────────┐
-│ PRESENTATION LAYER │
-│ JSP + HTML + CSS + JavaScript │
-├─────────────────────────────────┤
-│ BUSINESS LOGIC LAYER │
-│ Services + Validation │
-├─────────────────────────────────┤
-│ DATA ACCESS LAYER │
-│ DAO + JDBC + MySQL │
-└─────────────────────────────────┘
-
-text
-
-
-### Design Patterns Implemented
-
-| Pattern | Purpose |
-|---------|---------|
-| **MVC** | Separates data, logic, and presentation |
-| **Singleton** | Ensures single database connection instance |
-| **DAO** | Abstracts database operations |
-| **Observer** | Handles email/SMS notifications |
-| **Factory** | Creates different room type objects |
+- **3-Tier Architecture** (Presentation, Business Logic, Data Access)
+- **Design Patterns:**
+  - MVC (Model-View-Controller)
+  - Singleton (DatabaseManager)
+  - DAO (Data Access Object)
+  - Factory Pattern (DAOProvider)
+  - Observer Pattern (SystemStartupListener)
 
 ---
 
 ## System Features
 
-### Core Functionalities
-1. **User Authentication** - Secure login/logout with session management
-2. **Reservation Management** - Create, view, modify, cancel bookings
-3. **Billing System** - Automated bill calculation and invoice printing
-4. **Reports** - Daily reservations, revenue, occupancy reports
-5. **Help Section** - User guide for staff members
-
-### Additional Features
-- Dashboard with real-time statistics
-- Room availability calendar
-- Email/SMS notifications (simulated)
-- Search and filter reservations
-- Guest history tracking
-- Responsive purple-themed UI
+| Feature | Description |
+|---------|-------------|
+| **User Authentication** | Secure login/logout with session management |
+| **Add Reservation** | Register guests with full booking details |
+| **View Reservation** | Display complete booking information |
+| **Calculate & Print Bill** | Auto-calculate total stay cost |
+| **Help Section** | User guide for new staff members |
+| **Exit System** | Secure logout functionality |
+| **Reports** | Management reports for decision making |
+| **Email Notifications** | Automatic confirmation emails |
 
 ```
-## Directory Structure
-OceanViewResort/
+## Project Structure
+oceanview-resort-reservation/
 ├── .github/
 │ └── workflows/
 │ └── ci.yml
@@ -95,11 +72,11 @@ OceanViewResort/
 │ │ │ ├── controller/
 │ │ │ ├── filter/
 │ │ │ └── listener/
+│ │ ├── resources/
 │ │ └── webapp/
 │ │ ├── WEB-INF/
 │ │ ├── css/
 │ │ ├── js/
-│ │ ├── images/
 │ │ └── *.jsp
 │ └── test/
 │ └── java/com/oceanview/
@@ -108,95 +85,85 @@ OceanViewResort/
 ├── pom.xml
 └── database_setup.sql
 
-text
 
 
----
-
-## Database Implementation
-
-### Advanced Database Features
-
-**Stored Procedures:**
-- `GenerateReservationNumber` - Creates unique booking IDs
-- `CalculateBill` - Computes total charges
-- `GetReservationDetails` - Retrieves complete booking info
-
-**MySQL Functions:**
-- `GetAvailableRoomCount` - Returns number of vacant rooms
-- `CalculateNights` - Calculates stay duration
-
-**Database Triggers:**
-- `before_reservation_insert` - Validates data before insertion
-- `after_reservation_insert` - Post-booking operations
-- `after_reservation_update` - Handles booking modifications
 
 ---
 
-## Installation Guide
+## 🗄️ Database Features
+
+| Feature | Details |
+|---------|---------|
+| **Tables** | users, rooms, reservations, bills, email_logs |
+| **Stored Procedures** | GenerateReservationNumber, CalculateBill, GetReservationDetails |
+| **Functions** | GetAvailableRoomCount |
+| **Triggers** | before_reservation_insert, after_reservation_insert, after_reservation_update |
+
+---
+
+## Setup Instructions
 
 ### Prerequisites
-- Java JDK 11 or higher
-- Apache Tomcat 9.0
+- Java JDK 17
+- Apache Tomcat 9
 - MySQL 8.0
-- Apache Maven
+- Maven 3.x
+- Eclipse IDE
 
-### Setup Steps
+### Installation Steps
 
-**1. Clone Repository**
+**1. Clone the repository:**
 ```bash
 git clone https://github.com/DayaniSamaraweera/oceanview-resort-reservation.git
-cd oceanview-resort-reservation
-2. Database Setup
+2. Import into Eclipse:
+
+File → Import → Maven → Existing Maven Projects
+Browse to cloned folder → Finish
+3. Setup MySQL Database:
 
 Bash
 
-mysql -u root -p
-source database_setup.sql
-3. Update Database Credentials
+mysql -u root -p < database_setup.sql
+4. Update database credentials:
 
-Edit src/main/java/com/oceanview/dao/DBConnection.java:
+Open src/main/java/com/oceanview/dao/DatabaseManager.java
+Update USERNAME and PASSWORD
+5. Deploy to Tomcat:
 
-Java
+Right click project → Run As → Run on Server
+Select Tomcat 9 → Finish
+6. Access System:
 
-private static final String URL = "jdbc:mysql://localhost:3306/oceanview_resort";
-private static final String USERNAME = "root";
-private static final String PASSWORD = "your_password";
-4. Build Project
+
+
+http://localhost:8080/OceanViewResort/
+### Default Login Credentials
+| Role | Username |
+|------|----------|
+| Admin | manager |
+| Receptionist | staff01 |
+
+
+🧪 Testing
+Approach: Test-Driven Development (TDD)
+Framework: JUnit 4 + Mockito
+Test Classes: InputValidatorTest, BookingServiceTest, RoomManagerTest, StaffServiceTest, ReservationModelTest, UserDAOTest
+
+Run tests:
 
 Bash
-
-mvn clean package
-5. Deploy to Tomcat
-
-Right-click project → Run As → Run on Server
-Select Tomcat 9.0
-Access: http://localhost:8080/OceanViewResort
-Default Login:
-
-text
-
-Username: admin
-Password: admin123
-Testing
-Test-Driven Development (TDD)
-JUnit 4 unit tests
-Automated test execution
-Test coverage for business logic
-Bash
-
 mvn test
-CI/CD Pipeline
-GitHub Actions workflow automatically:
+🔄 CI/CD Pipeline
+GitHub Actions workflow configured
+Automatic build and test on every push
+Pipeline file: .github/workflows/ci.yml
 
-Builds the project using Maven
-Runs all unit tests
-Reports build status
-License & Usage
-This project is developed solely for academic purposes as part of the CIS6003 Advanced Programming module at Cardiff Metropolitan University.
-
-Developer
-D.I.Samaraweera
+👩‍💻 Developer
+D.S. Samaraweera
 Cardiff Metropolitan University
-CIS6003 - Advanced Programming
-Final Year Project - 2025
+Final Year - Software Engineering
+
+📄 License
+This project is developed for academic purposes only.
+
+© 2025 Ocean View Resort. All Rights Reserved.
