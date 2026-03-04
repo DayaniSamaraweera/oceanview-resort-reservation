@@ -55,8 +55,7 @@ public class EmailNotificationObserver implements IReservationObserver {
      * SMTP username - Update with actual Gmail address to enable
      * real email delivery. Leave as empty string for demo mode.
      */
-    private static final String SMTP_USERNAME = "landorelieflk@gmail.com
-";
+    private static final String SMTP_USERNAME = "landorelieflk@gmail.com";
 
     /**
      * SMTP password - Use Gmail App Password (not regular password).

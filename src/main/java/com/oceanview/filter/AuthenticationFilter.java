@@ -50,7 +50,7 @@ public class AuthenticationFilter implements Filter {
             "/css/",
             "/js/",
             "/error404.jsp",
-            "/error500.jsp"
+            "/error500.jsp",
             "/api/"
     );
 
