@@ -51,6 +51,7 @@ public class AuthenticationFilter implements Filter {
             "/js/",
             "/error404.jsp",
             "/error500.jsp"
+            "/api/"
     );
 
     /** Pages only ADMIN can access */
