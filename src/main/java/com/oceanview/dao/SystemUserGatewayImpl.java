@@ -22,7 +22,7 @@ import java.util.logging.Logger;
  * values. Plain text passwords never reach this layer.</p>
  *
  * @author Dayani Samaraweera
- * @version 1.0
+ * @version 1.1
  */
 public class SystemUserGatewayImpl implements ISystemUserGateway {
 
@@ -36,7 +36,7 @@ public class SystemUserGatewayImpl implements ISystemUserGateway {
 
     /**
      * Maps a ResultSet row to a SystemUser object.
-     * Reusable helper method to avoid code duplication.
+     * Includes the must_change_password flag for first-login flow.
      *
      * @param resultRow the current ResultSet row
      * @return a populated SystemUser object
@@ -51,6 +51,8 @@ public class SystemUserGatewayImpl implements ISystemUserGateway {
         mappedUser.setUserRole(resultRow.getString("user_role"));
         mappedUser.setEmailAddress(resultRow.getString("email_address"));
         mappedUser.setIsActive(resultRow.getBoolean("is_active"));
+        mappedUser.setMustChangePassword(
+                resultRow.getBoolean("must_change_password"));
 
         if (resultRow.getTimestamp("created_at") != null) {
             mappedUser.setCreatedAt(
@@ -159,13 +161,17 @@ public class SystemUserGatewayImpl implements ISystemUserGateway {
         return activeUsers;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     * Inserts with must_change_password flag for first-login flow.
+     */
     @Override
     public boolean insertUser(SystemUser user) {
 
         String insertQuery = "INSERT INTO users "
-                + "(username, password_hash, full_name, user_role, email_address, is_active) "
-                + "VALUES (?, ?, ?, ?, ?, ?)";
+                + "(username, password_hash, full_name, user_role, "
+                + "email_address, is_active, must_change_password) "
+                + "VALUES (?, ?, ?, ?, ?, ?, ?)";
 
         Connection dbConnection = null;
 
@@ -178,6 +184,7 @@ public class SystemUserGatewayImpl implements ISystemUserGateway {
             insertStatement.setString(4, user.getUserRole());
             insertStatement.setString(5, user.getEmailAddress());
             insertStatement.setBoolean(6, user.getIsActive());
+            insertStatement.setBoolean(7, user.getMustChangePassword());
 
             int rowsInserted = insertStatement.executeUpdate();
 
@@ -255,6 +262,64 @@ public class SystemUserGatewayImpl implements ISystemUserGateway {
         } catch (SQLException deactivateException) {
             GATEWAY_LOGGER.log(Level.SEVERE,
                     "Error deactivating user ID: " + userId, deactivateException);
+            return false;
+        } finally {
+            dbManager.closeConnection(dbConnection);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * <p>Updates password hash and optionally the username.
+     * Resets must_change_password to 0 (false) so the user
+     * is not forced to change again on next login.</p>
+     */
+    @Override
+    public boolean updatePassword(int userId, String newUsername,
+                                  String newPasswordHash) {
+
+        Connection dbConnection = null;
+
+        try {
+            dbConnection = dbManager.openConnection();
+
+            String updateQuery;
+            PreparedStatement updateStatement;
+
+            if (newUsername != null && !newUsername.trim().isEmpty()) {
+                // Update both username and password
+                updateQuery = "UPDATE users SET "
+                        + "username = ?, password_hash = ?, "
+                        + "must_change_password = 0 "
+                        + "WHERE user_id = ?";
+                updateStatement = dbConnection.prepareStatement(updateQuery);
+                updateStatement.setString(1, newUsername.trim());
+                updateStatement.setString(2, newPasswordHash);
+                updateStatement.setInt(3, userId);
+            } else {
+                // Update password only
+                updateQuery = "UPDATE users SET "
+                        + "password_hash = ?, must_change_password = 0 "
+                        + "WHERE user_id = ?";
+                updateStatement = dbConnection.prepareStatement(updateQuery);
+                updateStatement.setString(1, newPasswordHash);
+                updateStatement.setInt(2, userId);
+            }
+
+            int rowsUpdated = updateStatement.executeUpdate();
+
+            if (rowsUpdated > 0) {
+                GATEWAY_LOGGER.info(
+                        "Password updated for user ID: " + userId);
+                return true;
+            }
+            return false;
+
+        } catch (SQLException updateException) {
+            GATEWAY_LOGGER.log(Level.SEVERE,
+                    "Error updating password for user ID: " + userId,
+                    updateException);
             return false;
         } finally {
             dbManager.closeConnection(dbConnection);

@@ -14,7 +14,7 @@ import java.util.List;
  * (Login)" feature and staff management functionality.</p>
  *
  * @author Dayani Samaraweera
- * @version 1.0
+ * @version 1.1
  */
 public interface ISystemUserGateway {
 
@@ -65,4 +65,17 @@ public interface ISystemUserGateway {
      * @return true if deactivation was successful
      */
     boolean deactivateUser(int userId);
+
+    /**
+     * Updates a user's password and optionally their username.
+     * Also resets the must_change_password flag to false.
+     * Used when staff members change their temporary credentials
+     * on first login.
+     *
+     * @param userId the user ID whose password to update
+     * @param newUsername the new username (null to keep existing)
+     * @param newPasswordHash the new SHA-256 hashed password
+     * @return true if update was successful
+     */
+    boolean updatePassword(int userId, String newUsername, String newPasswordHash);
 }

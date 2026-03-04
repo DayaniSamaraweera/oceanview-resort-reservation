@@ -16,12 +16,13 @@ import java.util.logging.Logger;
  * The AuthenticationFilter and servlet-level checks enforce
  * this restriction before calling any method here.</p>
  *
- * <p><b>Architecture:</b> Business Logic Layer - validates staff
- * data, hashes passwords, and delegates database operations
- * to the DAO layer. Uses Builder pattern for user construction.</p>
+ * <p><b>Password Change Flow:</b> When Admin creates a new staff
+ * account, mustChangePassword is set to TRUE. On first login,
+ * the staff member is redirected to changePassword.jsp and
+ * forced to set their own username and password.</p>
  *
  * @author Dayani Samaraweera
- * @version 1.0
+ * @version 1.1
  */
 public class StaffManagementOrchestratorImpl
         implements IStaffManagementOrchestrator {
@@ -60,9 +61,12 @@ public class StaffManagementOrchestratorImpl
      *
      * <p>Workflow:
      * 1. Validate all input fields
-     * 2. Hash the password using SHA-256
-     * 3. Build SystemUser using Builder pattern
-     * 4. Delegate to DAO for database insertion</p>
+     * 2. Hash the temporary password using SHA-256
+     * 3. Build SystemUser with mustChangePassword = TRUE
+     * 4. Delegate to DAO for database insertion
+     *
+     * The new staff member will be forced to change their
+     * temporary credentials on first login.</p>
      */
     @Override
     public boolean createStaffAccount(String username, String plainPassword,
@@ -100,7 +104,7 @@ public class StaffManagementOrchestratorImpl
         }
 
         try {
-            // Hash the password for secure storage
+            // Hash the temporary password for secure storage
             String hashedPassword =
                     PasswordHashGenerator.generateHash(plainPassword);
 
@@ -109,7 +113,8 @@ public class StaffManagementOrchestratorImpl
                 return false;
             }
 
-            // Build user using Builder pattern
+            // Build user with mustChangePassword = TRUE
+            // Staff must change temporary credentials on first login
             SystemUser newStaffUser = new SystemUser.Builder()
                     .username(username.trim())
                     .passwordHash(hashedPassword)
@@ -118,13 +123,15 @@ public class StaffManagementOrchestratorImpl
                     .emailAddress(
                             emailAddress != null ? emailAddress.trim() : "")
                     .isActive(true)
+                    .mustChangePassword(true)  // FORCE password change on first login
                     .build();
 
             boolean insertSuccess = userGateway.insertUser(newStaffUser);
 
             if (insertSuccess) {
                 STAFF_LOGGER.info("New staff account created: "
-                        + username + " (Role: " + userRole + ")");
+                        + username + " (Role: " + userRole
+                        + ") - Must change password on first login");
             } else {
                 STAFF_LOGGER.warning(
                         "Failed to create staff account: " + username);

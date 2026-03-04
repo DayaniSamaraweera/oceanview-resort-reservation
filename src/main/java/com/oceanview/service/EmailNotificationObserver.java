@@ -55,13 +55,14 @@ public class EmailNotificationObserver implements IReservationObserver {
      * SMTP username - Update with actual Gmail address to enable
      * real email delivery. Leave as empty string for demo mode.
      */
-    private static final String SMTP_USERNAME = "";
+    private static final String SMTP_USERNAME = "landorelieflk@gmail.com
+";
 
     /**
      * SMTP password - Use Gmail App Password (not regular password).
      * Leave as empty string for demo mode (emails will be logged only).
      */
-    private static final String SMTP_PASSWORD = "";
+    private static final String SMTP_PASSWORD = "qgio kmkf cuft qyvp";
 
     /** Resort name for email branding */
     private static final String RESORT_NAME = "Ocean View Resort";

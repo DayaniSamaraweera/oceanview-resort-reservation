@@ -15,8 +15,13 @@ import java.time.LocalDateTime;
  * <p><b>Requirement Traceability:</b> Maps to "User Authentication (Login)"
  * feature - username and password_hash are used for secure login.</p>
  * 
+ * <p><b>Password Change Flow:</b> When Admin creates a new staff account,
+ * mustChangePassword is set to true. On first login, the staff member
+ * is forced to change their temporary credentials before accessing
+ * the dashboard.</p>
+ * 
  * @author Dayani Samaraweera
- * @version 1.0
+ * @version 1.1
  */
 public class SystemUser {
 
@@ -40,6 +45,13 @@ public class SystemUser {
 
     /** Active status flag: true = active, false = deactivated */
     private boolean isActive;
+
+    /** 
+     * Password change flag: true = user must change password on next login.
+     * Set to true when Admin creates a new staff account with temporary
+     * credentials. Reset to false after the staff member changes their password.
+     */
+    private boolean mustChangePassword;
 
     /** Timestamp when the user account was created */
     private LocalDateTime createdAt;
@@ -68,150 +80,86 @@ public class SystemUser {
         this.userRole = builder.userRole;
         this.emailAddress = builder.emailAddress;
         this.isActive = builder.isActive;
+        this.mustChangePassword = builder.mustChangePassword;
         this.createdAt = builder.createdAt;
         this.updatedAt = builder.updatedAt;
     }
 
     // ======================== GETTERS ========================
 
-    /**
-     * @return the unique user identifier
-     */
-    public int getUserId() {
-        return userId;
-    }
+    /** @return the unique user identifier */
+    public int getUserId() { return userId; }
 
-    /**
-     * @return the login username
-     */
-    public String getUsername() {
-        return username;
-    }
+    /** @return the login username */
+    public String getUsername() { return username; }
 
-    /**
-     * @return the SHA-256 hashed password
-     */
-    public String getPasswordHash() {
-        return passwordHash;
-    }
+    /** @return the SHA-256 hashed password */
+    public String getPasswordHash() { return passwordHash; }
 
-    /**
-     * @return the full display name
-     */
-    public String getFullName() {
-        return fullName;
-    }
+    /** @return the full display name */
+    public String getFullName() { return fullName; }
 
-    /**
-     * @return the user role (ADMIN or RECEPTIONIST)
-     */
-    public String getUserRole() {
-        return userRole;
-    }
+    /** @return the user role (ADMIN or RECEPTIONIST) */
+    public String getUserRole() { return userRole; }
 
-    /**
-     * @return the email address
-     */
-    public String getEmailAddress() {
-        return emailAddress;
-    }
+    /** @return the email address */
+    public String getEmailAddress() { return emailAddress; }
 
-    /**
-     * @return true if the account is active
-     */
-    public boolean getIsActive() {
-        return isActive;
-    }
+    /** @return true if the account is active */
+    public boolean getIsActive() { return isActive; }
 
-    /**
-     * @return the account creation timestamp
-     */
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
+    /** @return true if user must change password on next login */
+    public boolean getMustChangePassword() { return mustChangePassword; }
 
-    /**
-     * @return the last modification timestamp
-     */
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
+    /** @return the account creation timestamp */
+    public LocalDateTime getCreatedAt() { return createdAt; }
+
+    /** @return the last modification timestamp */
+    public LocalDateTime getUpdatedAt() { return updatedAt; }
 
     // ======================== SETTERS ========================
 
-    /**
-     * @param userId the unique user identifier to set
-     */
-    public void setUserId(int userId) {
-        this.userId = userId;
+    /** @param userId the unique user identifier to set */
+    public void setUserId(int userId) { this.userId = userId; }
+
+    /** @param username the login username to set */
+    public void setUsername(String username) { this.username = username; }
+
+    /** @param passwordHash the SHA-256 hashed password to set */
+    public void setPasswordHash(String passwordHash) { this.passwordHash = passwordHash; }
+
+    /** @param fullName the full display name to set */
+    public void setFullName(String fullName) { this.fullName = fullName; }
+
+    /** @param userRole the role to set (ADMIN or RECEPTIONIST) */
+    public void setUserRole(String userRole) { this.userRole = userRole; }
+
+    /** @param emailAddress the email address to set */
+    public void setEmailAddress(String emailAddress) { this.emailAddress = emailAddress; }
+
+    /** @param isActive the active status to set */
+    public void setIsActive(boolean isActive) { this.isActive = isActive; }
+
+    /** @param mustChangePassword the password change flag to set */
+    public void setMustChangePassword(boolean mustChangePassword) { 
+        this.mustChangePassword = mustChangePassword; 
     }
 
-    /**
-     * @param username the login username to set
-     */
-    public void setUsername(String username) {
-        this.username = username;
-    }
+    /** @param createdAt the creation timestamp to set */
+    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
 
-    /**
-     * @param passwordHash the SHA-256 hashed password to set
-     */
-    public void setPasswordHash(String passwordHash) {
-        this.passwordHash = passwordHash;
-    }
+    /** @param updatedAt the modification timestamp to set */
+    public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
 
-    /**
-     * @param fullName the full display name to set
-     */
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
-    }
-
-    /**
-     * @param userRole the role to set (ADMIN or RECEPTIONIST)
-     */
-    public void setUserRole(String userRole) {
-        this.userRole = userRole;
-    }
-
-    /**
-     * @param emailAddress the email address to set
-     */
-    public void setEmailAddress(String emailAddress) {
-        this.emailAddress = emailAddress;
-    }
-
-    /**
-     * @param isActive the active status to set
-     */
-    public void setIsActive(boolean isActive) {
-        this.isActive = isActive;
-    }
-
-    /**
-     * @param createdAt the creation timestamp to set
-     */
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    /**
-     * @param updatedAt the modification timestamp to set
-     */
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
-    }
-
-    /**
-     * @return string representation for logging and debugging
-     */
+    /** @return string representation for logging and debugging */
     @Override
     public String toString() {
         return "SystemUser{userId=" + userId
                 + ", username='" + username + "'"
                 + ", fullName='" + fullName + "'"
                 + ", userRole='" + userRole + "'"
-                + ", isActive=" + isActive + "}";
+                + ", isActive=" + isActive
+                + ", mustChangePassword=" + mustChangePassword + "}";
     }
 
     // ======================== BUILDER ========================
@@ -233,6 +181,7 @@ public class SystemUser {
      *     .userRole("ADMIN")
      *     .emailAddress("admin@oceanviewresort.lk")
      *     .isActive(true)
+     *     .mustChangePassword(false)
      *     .build();
      * </pre>
      */
@@ -245,97 +194,27 @@ public class SystemUser {
         private String userRole;
         private String emailAddress;
         private boolean isActive = true;
+        private boolean mustChangePassword = false;
         private LocalDateTime createdAt;
         private LocalDateTime updatedAt;
 
-        /**
-         * @param userId the unique user identifier
-         * @return this Builder instance for method chaining
-         */
-        public Builder userId(int userId) {
-            this.userId = userId;
-            return this;
+        public Builder userId(int userId) { this.userId = userId; return this; }
+        public Builder username(String username) { this.username = username; return this; }
+        public Builder passwordHash(String passwordHash) { this.passwordHash = passwordHash; return this; }
+        public Builder fullName(String fullName) { this.fullName = fullName; return this; }
+        public Builder userRole(String userRole) { this.userRole = userRole; return this; }
+        public Builder emailAddress(String emailAddress) { this.emailAddress = emailAddress; return this; }
+        public Builder isActive(boolean isActive) { this.isActive = isActive; return this; }
+        public Builder mustChangePassword(boolean mustChangePassword) { 
+            this.mustChangePassword = mustChangePassword; return this; 
         }
-
-        /**
-         * @param username the login username
-         * @return this Builder instance for method chaining
-         */
-        public Builder username(String username) {
-            this.username = username;
-            return this;
-        }
-
-        /**
-         * @param passwordHash the SHA-256 hashed password
-         * @return this Builder instance for method chaining
-         */
-        public Builder passwordHash(String passwordHash) {
-            this.passwordHash = passwordHash;
-            return this;
-        }
-
-        /**
-         * @param fullName the full display name
-         * @return this Builder instance for method chaining
-         */
-        public Builder fullName(String fullName) {
-            this.fullName = fullName;
-            return this;
-        }
-
-        /**
-         * @param userRole the role (ADMIN or RECEPTIONIST)
-         * @return this Builder instance for method chaining
-         */
-        public Builder userRole(String userRole) {
-            this.userRole = userRole;
-            return this;
-        }
-
-        /**
-         * @param emailAddress the email address
-         * @return this Builder instance for method chaining
-         */
-        public Builder emailAddress(String emailAddress) {
-            this.emailAddress = emailAddress;
-            return this;
-        }
-
-        /**
-         * @param isActive the active status
-         * @return this Builder instance for method chaining
-         */
-        public Builder isActive(boolean isActive) {
-            this.isActive = isActive;
-            return this;
-        }
-
-        /**
-         * @param createdAt the creation timestamp
-         * @return this Builder instance for method chaining
-         */
-        public Builder createdAt(LocalDateTime createdAt) {
-            this.createdAt = createdAt;
-            return this;
-        }
-
-        /**
-         * @param updatedAt the modification timestamp
-         * @return this Builder instance for method chaining
-         */
-        public Builder updatedAt(LocalDateTime updatedAt) {
-            this.updatedAt = updatedAt;
-            return this;
-        }
+        public Builder createdAt(LocalDateTime createdAt) { this.createdAt = createdAt; return this; }
+        public Builder updatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; return this; }
 
         /**
          * Constructs the SystemUser instance with the configured values.
-         *
          * @return a new SystemUser object
          */
-        public SystemUser build() {
-            return new SystemUser(this);
-        }
+        public SystemUser build() { return new SystemUser(this); }
     }
 }
