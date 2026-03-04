@@ -1,275 +1,464 @@
--- ================================================
--- Ocean View Resort - Database Setup
--- Online Room Reservation System
-
--- ================================================
+-- ============================================================
+-- Ocean View Resort - Online Room Reservation System
+-- Database Setup Script
+-- Author: Dayani Samaraweera
+-- Database: MySQL 8.0
+-- ============================================================
 
 DROP DATABASE IF EXISTS oceanview_resort_db;
-CREATE DATABASE oceanview_resort_db;
+CREATE DATABASE oceanview_resort_db
+    CHARACTER SET utf8mb4
+    COLLATE utf8mb4_unicode_ci;
 USE oceanview_resort_db;
 
--- ================================================
--- TABLE: users (RBAC - Admin & Staff)
--- ================================================
+
+-- ============================================================
+-- TABLE: users
+-- Purpose: Stores system user credentials and role information
+-- Assumption: Two roles exist - ADMIN (Resort Manager) has
+--   full system access, RECEPTIONIST (Staff) has limited access
+-- Security: Passwords stored as SHA-256 hashes
+-- ============================================================
 CREATE TABLE users (
-    user_id INT PRIMARY KEY AUTO_INCREMENT,
-    username VARCHAR(50) NOT NULL UNIQUE,
-    password VARCHAR(255) NOT NULL,
-    full_name VARCHAR(100) NOT NULL,
-    email VARCHAR(100) NOT NULL,
-    role ENUM('admin', 'staff') NOT NULL DEFAULT 'staff',
-    is_first_login TINYINT(1) DEFAULT 1,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
+    user_id          INT AUTO_INCREMENT PRIMARY KEY,
+    username         VARCHAR(50)  NOT NULL UNIQUE,
+    password_hash    VARCHAR(64)  NOT NULL,
+    full_name        VARCHAR(100) NOT NULL,
+    user_role        ENUM('ADMIN', 'RECEPTIONIST') NOT NULL,
+    email_address    VARCHAR(100),
+    is_active        TINYINT(1)   DEFAULT 1,
+    created_at       TIMESTAMP    DEFAULT CURRENT_TIMESTAMP,
+    updated_at       TIMESTAMP    DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB;
 
--- ================================================
+
+-- ============================================================
 -- TABLE: rooms
--- ================================================
+-- Purpose: Stores room inventory with types and nightly rates
+-- Assumption: Ocean View Resort has 14 rooms across 4 floors
+--   Floor 1: Standard rooms (LKR 5,500)
+--   Floor 2: Superior rooms (LKR 8,500)
+--   Floor 3: Premium rooms  (LKR 13,000)
+--   Floor 4: Executive suites (LKR 22,000)
+-- ============================================================
 CREATE TABLE rooms (
-    room_id INT PRIMARY KEY AUTO_INCREMENT,
-    room_number VARCHAR(10) NOT NULL UNIQUE,
-    room_type ENUM('Standard', 'Deluxe', 'Suite', 'Family') NOT NULL,
-    price_per_night DECIMAL(10,2) NOT NULL,
-    capacity INT NOT NULL DEFAULT 2,
-    description TEXT,
-    status ENUM('Available', 'Occupied', 'Maintenance') NOT NULL DEFAULT 'Available'
-);
+    room_id          INT AUTO_INCREMENT PRIMARY KEY,
+    room_number      VARCHAR(10)    NOT NULL UNIQUE,
+    room_type        ENUM('Standard', 'Superior', 'Premium', 'Executive') NOT NULL,
+    rate_per_night   DECIMAL(10,2)  NOT NULL,
+    is_available     TINYINT(1)     DEFAULT 1,
+    floor_number     INT            NOT NULL,
+    max_guests       INT            DEFAULT 2,
+    room_description TEXT,
+    created_at       TIMESTAMP      DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB;
 
--- ================================================
+
+-- ============================================================
 -- TABLE: reservations
--- ================================================
+-- Purpose: Stores guest booking information
+-- Status Flow: Confirmed -> Checked-In -> Checked-Out
+--              Confirmed -> Cancelled (with reason)
+-- Requirement Traceability: Maps to "Add New Reservation"
+--   feature collecting reservation number, guest name, address,
+--   contact number, room type, check-in and check-out dates
+-- ============================================================
 CREATE TABLE reservations (
-    reservation_id INT PRIMARY KEY AUTO_INCREMENT,
-    reservation_number VARCHAR(20) NOT NULL UNIQUE,
-    guest_name VARCHAR(100) NOT NULL,
-    guest_address TEXT NOT NULL,
-    contact_number VARCHAR(15) NOT NULL,
-    guest_email VARCHAR(100),
-    room_id INT NOT NULL,
-    check_in_date DATE NOT NULL,
-    check_out_date DATE NOT NULL,
-    total_nights INT NOT NULL DEFAULT 0,
-    total_amount DECIMAL(10,2) NOT NULL DEFAULT 0.00,
-    status ENUM('Confirmed', 'Checked-In', 'Checked-Out', 'Cancelled') 
-        NOT NULL DEFAULT 'Confirmed',
-    created_by INT NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP 
-        ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (room_id) REFERENCES rooms(room_id),
-    FOREIGN KEY (created_by) REFERENCES users(user_id)
-);
+    reservation_id     INT AUTO_INCREMENT PRIMARY KEY,
+    reservation_number VARCHAR(20)  NOT NULL UNIQUE,
+    guest_name         VARCHAR(100) NOT NULL,
+    address            VARCHAR(255) NOT NULL,
+    contact_number     VARCHAR(15)  NOT NULL,
+    guest_email        VARCHAR(100),
+    room_id            INT          NOT NULL,
+    room_type          ENUM('Standard', 'Superior', 'Premium', 'Executive') NOT NULL,
+    check_in_date      DATE         NOT NULL,
+    check_out_date     DATE         NOT NULL,
+    number_of_nights   INT          DEFAULT 0,
+    reservation_status ENUM('Confirmed', 'Checked-In', 'Checked-Out', 'Cancelled')
+                       DEFAULT 'Confirmed',
+    cancel_reason      VARCHAR(255),
+    created_by         INT,
+    created_at         TIMESTAMP    DEFAULT CURRENT_TIMESTAMP,
+    updated_at         TIMESTAMP    DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 
--- ================================================
+    CONSTRAINT fk_res_room
+        FOREIGN KEY (room_id) REFERENCES rooms(room_id),
+    CONSTRAINT fk_res_creator
+        FOREIGN KEY (created_by) REFERENCES users(user_id)
+) ENGINE=InnoDB;
+
+
+-- ============================================================
 -- TABLE: bills
--- ================================================
+-- Purpose: Stores generated invoice and billing information
+-- Requirement Traceability: Maps to "Calculate and Print Bill"
+--   computing total stay cost based on nights and room rates
+-- ============================================================
 CREATE TABLE bills (
-    bill_id INT PRIMARY KEY AUTO_INCREMENT,
-    reservation_id INT NOT NULL UNIQUE,
-    room_charge DECIMAL(10,2) NOT NULL,
-    tax_amount DECIMAL(10,2) NOT NULL,
-    service_charge DECIMAL(10,2) NOT NULL DEFAULT 0.00,
-    total_amount DECIMAL(10,2) NOT NULL,
-    payment_status ENUM('Pending', 'Paid') NOT NULL DEFAULT 'Pending',
-    generated_by INT,
-    generated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (reservation_id) REFERENCES reservations(reservation_id),
-    FOREIGN KEY (generated_by) REFERENCES users(user_id)
-);
+    bill_id            INT AUTO_INCREMENT PRIMARY KEY,
+    bill_number        VARCHAR(20)   NOT NULL UNIQUE,
+    reservation_id     INT           NOT NULL,
+    reservation_number VARCHAR(20)   NOT NULL,
+    guest_name         VARCHAR(100)  NOT NULL,
+    room_type          ENUM('Standard', 'Superior', 'Premium', 'Executive') NOT NULL,
+    rate_per_night     DECIMAL(10,2) NOT NULL,
+    number_of_nights   INT           NOT NULL,
+    subtotal           DECIMAL(10,2) NOT NULL,
+    tax_percentage     DECIMAL(5,2)  DEFAULT 0.00,
+    tax_amount         DECIMAL(10,2) DEFAULT 0.00,
+    total_amount       DECIMAL(10,2) NOT NULL,
+    generated_by       INT,
+    generated_at       TIMESTAMP     DEFAULT CURRENT_TIMESTAMP,
 
--- ================================================
--- TABLE: email_logs (Email Simulation)
--- ================================================
-CREATE TABLE email_logs (
-    log_id INT PRIMARY KEY AUTO_INCREMENT,
-    reservation_id INT,
-    recipient_email VARCHAR(100) NOT NULL,
-    subject VARCHAR(200) NOT NULL,
-    message TEXT NOT NULL,
-    status ENUM('Sent', 'Failed') NOT NULL DEFAULT 'Sent',
-    sent_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (reservation_id) REFERENCES reservations(reservation_id)
-);
+    CONSTRAINT fk_bill_reservation
+        FOREIGN KEY (reservation_id) REFERENCES reservations(reservation_id),
+    CONSTRAINT fk_bill_generator
+        FOREIGN KEY (generated_by) REFERENCES users(user_id)
+) ENGINE=InnoDB;
 
--- ================================================
--- STORED PROCEDURE: Generate Reservation Number
--- ================================================
+
+-- ============================================================
+-- TABLE: audit_log
+-- Purpose: Tracks all system activities for security auditing
+-- Assumption: Every create, update, delete action is logged
+--   to support management oversight and accountability
+-- ============================================================
+CREATE TABLE audit_log (
+    log_id             INT AUTO_INCREMENT PRIMARY KEY,
+    user_id            INT,
+    username           VARCHAR(50),
+    action_type        VARCHAR(50)  NOT NULL,
+    action_description VARCHAR(500),
+    target_table       VARCHAR(50),
+    target_record_id   INT,
+    ip_address         VARCHAR(45),
+    action_timestamp   TIMESTAMP    DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB;
+
+
+-- ============================================================
+-- STORED PROCEDURE: GenerateReservationNumber
+-- Purpose: Generates unique reservation numbers
+-- Format: RES-YYYY-NNNNN (e.g., RES-2026-00001)
+-- ============================================================
 DELIMITER //
 CREATE PROCEDURE GenerateReservationNumber(
-    OUT new_reservation_number VARCHAR(20))
+    OUT generated_number VARCHAR(20)
+)
 BEGIN
-    DECLARE next_id INT;
-    DECLARE current_year VARCHAR(4);
-    SET current_year = YEAR(CURDATE());
-    SELECT IFNULL(MAX(reservation_id), 0) + 1 
-        INTO next_id FROM reservations;
-    SET new_reservation_number = CONCAT(
-        'OVR-', current_year, '-', LPAD(next_id, 4, '0'));
+    DECLARE sequence_value INT;
+    DECLARE year_prefix VARCHAR(4);
+
+    SET year_prefix = YEAR(CURDATE());
+
+    SELECT COALESCE(
+        MAX(CAST(SUBSTRING(reservation_number, 10) AS UNSIGNED)), 0
+    ) + 1
+    INTO sequence_value
+    FROM reservations
+    WHERE reservation_number LIKE CONCAT('RES-', year_prefix, '-%');
+
+    SET generated_number = CONCAT(
+        'RES-', year_prefix, '-', LPAD(sequence_value, 5, '0')
+    );
 END //
 DELIMITER ;
 
--- ================================================
--- STORED PROCEDURE: Calculate Bill
--- ================================================
+
+-- ============================================================
+-- STORED PROCEDURE: CalculateBill
+-- Purpose: Computes total stay cost based on nights and room rate
+-- Requirement: "Calculate and Print Bill" feature
+-- ============================================================
 DELIMITER //
 CREATE PROCEDURE CalculateBill(
-    IN p_reservation_id INT,
-    IN p_generated_by INT)
+    IN  p_reservation_id  INT,
+    OUT p_bill_number     VARCHAR(20),
+    OUT p_subtotal        DECIMAL(10,2),
+    OUT p_tax_amount      DECIMAL(10,2),
+    OUT p_total_amount    DECIMAL(10,2)
+)
 BEGIN
-    DECLARE v_nights INT;
-    DECLARE v_rate DECIMAL(10,2);
-    DECLARE v_room_charge DECIMAL(10,2);
-    DECLARE v_tax DECIMAL(10,2);
-    DECLARE v_service DECIMAL(10,2);
-    DECLARE v_total DECIMAL(10,2);
+    DECLARE v_rate_per_night  DECIMAL(10,2);
+    DECLARE v_nights          INT;
+    DECLARE v_tax_percentage  DECIMAL(5,2) DEFAULT 0.00;
+    DECLARE v_bill_sequence   INT;
+    DECLARE v_year_prefix     VARCHAR(4);
 
-    SELECT r.total_nights, rm.price_per_night
-    INTO v_nights, v_rate
-    FROM reservations r
-    JOIN rooms rm ON r.room_id = rm.room_id
-    WHERE r.reservation_id = p_reservation_id;
+    -- Retrieve room rate and number of nights from reservation
+    SELECT rm.rate_per_night, res.number_of_nights
+    INTO v_rate_per_night, v_nights
+    FROM reservations res
+    INNER JOIN rooms rm ON res.room_id = rm.room_id
+    WHERE res.reservation_id = p_reservation_id;
 
-    SET v_room_charge = v_nights * v_rate;
-    SET v_tax = v_room_charge * 0.10;
-    SET v_service = v_room_charge * 0.05;
-    SET v_total = v_room_charge + v_tax + v_service;
+    -- Calculate billing amounts
+    SET p_subtotal    = v_rate_per_night * v_nights;
+    SET p_tax_amount  = p_subtotal * (v_tax_percentage / 100);
+    SET p_total_amount = p_subtotal + p_tax_amount;
 
-    INSERT INTO bills (reservation_id, room_charge, tax_amount,
-        service_charge, total_amount, generated_by)
-    VALUES (p_reservation_id, v_room_charge, v_tax,
-        v_service, v_total, p_generated_by)
-    ON DUPLICATE KEY UPDATE
-        room_charge = v_room_charge,
-        tax_amount = v_tax,
-        service_charge = v_service,
-        total_amount = v_total;
+    -- Generate unique bill number (BILL-YYYY-NNNNN)
+    SET v_year_prefix = YEAR(CURDATE());
 
-    SELECT v_room_charge AS room_charge,
-           v_tax AS tax_amount,
-           v_service AS service_charge,
-           v_total AS total_amount;
+    SELECT COALESCE(
+        MAX(CAST(SUBSTRING(bill_number, 11) AS UNSIGNED)), 0
+    ) + 1
+    INTO v_bill_sequence
+    FROM bills
+    WHERE bill_number LIKE CONCAT('BILL-', v_year_prefix, '-%');
+
+    SET p_bill_number = CONCAT(
+        'BILL-', v_year_prefix, '-', LPAD(v_bill_sequence, 5, '0')
+    );
 END //
 DELIMITER ;
 
--- ================================================
--- STORED PROCEDURE: Get Reservation Details
--- ================================================
+
+-- ============================================================
+-- STORED PROCEDURE: GetReservationDetails
+-- Purpose: Retrieves complete booking information for display
+-- Requirement: "Display Reservation Details" feature
+-- ============================================================
 DELIMITER //
 CREATE PROCEDURE GetReservationDetails(
-    IN p_reservation_number VARCHAR(20))
+    IN p_reservation_number VARCHAR(20)
+)
 BEGIN
-    SELECT r.reservation_id, r.reservation_number,
-           r.guest_name, r.guest_address, r.contact_number,
-           r.guest_email, rm.room_number, rm.room_type,
-           rm.price_per_night, r.check_in_date,
-           r.check_out_date, r.total_nights,
-           r.total_amount, r.status, r.created_at
-    FROM reservations r
-    JOIN rooms rm ON r.room_id = rm.room_id
-    WHERE r.reservation_number = p_reservation_number;
+    SELECT
+        res.reservation_id,
+        res.reservation_number,
+        res.guest_name,
+        res.address,
+        res.contact_number,
+        res.guest_email,
+        rm.room_number,
+        res.room_type,
+        rm.rate_per_night,
+        res.check_in_date,
+        res.check_out_date,
+        res.number_of_nights,
+        res.reservation_status,
+        res.cancel_reason,
+        u.full_name AS created_by_name,
+        res.created_at
+    FROM reservations res
+    INNER JOIN rooms rm ON res.room_id = rm.room_id
+    LEFT JOIN users u ON res.created_by = u.user_id
+    WHERE res.reservation_number = p_reservation_number;
 END //
 DELIMITER ;
 
--- ================================================
--- FUNCTION: Get Available Room Count
--- ================================================
+
+-- ============================================================
+-- FUNCTION: GetAvailableRoomCount
+-- Purpose: Returns count of available rooms by type
+-- Usage: SELECT GetAvailableRoomCount('Standard');
+--        SELECT GetAvailableRoomCount('ALL');
+-- ============================================================
 DELIMITER //
-CREATE FUNCTION GetAvailableRoomCount(p_room_type VARCHAR(20))
+CREATE FUNCTION GetAvailableRoomCount(
+    p_room_type VARCHAR(20)
+)
 RETURNS INT
 DETERMINISTIC
 READS SQL DATA
 BEGIN
-    DECLARE v_count INT;
-    SELECT COUNT(*) INTO v_count
-    FROM rooms
-    WHERE status = 'Available'
-    AND (p_room_type = 'ALL' OR room_type = p_room_type);
-    RETURN v_count;
+    DECLARE available_count INT;
+
+    IF p_room_type IS NULL OR p_room_type = '' OR p_room_type = 'ALL' THEN
+        SELECT COUNT(*) INTO available_count
+        FROM rooms
+        WHERE is_available = 1;
+    ELSE
+        SELECT COUNT(*) INTO available_count
+        FROM rooms
+        WHERE is_available = 1 AND room_type = p_room_type;
+    END IF;
+
+    RETURN available_count;
 END //
 DELIMITER ;
 
--- ================================================
--- TRIGGER: Auto calculate nights and total
--- ================================================
+
+-- ============================================================
+-- TRIGGER: before_reservation_insert
+-- Purpose: Validates booking data before saving
+--   1. Check-out date must be after check-in date
+--   2. Check-in date cannot be in the past
+--   3. Automatically calculates number of nights
+--   4. Detects booking conflicts (same room, overlapping dates)
+-- ============================================================
 DELIMITER //
 CREATE TRIGGER before_reservation_insert
 BEFORE INSERT ON reservations
 FOR EACH ROW
 BEGIN
-    DECLARE v_rate DECIMAL(10,2);
-    SET NEW.total_nights = 
-        DATEDIFF(NEW.check_out_date, NEW.check_in_date);
-    SELECT price_per_night INTO v_rate 
-        FROM rooms WHERE room_id = NEW.room_id;
-    SET NEW.total_amount = NEW.total_nights * v_rate;
+    DECLARE overlap_count INT;
+
+    -- Validation: check-out must be after check-in
+    IF NEW.check_out_date <= NEW.check_in_date THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Check-out date must be after check-in date';
+    END IF;
+
+    -- Validation: check-in cannot be in the past
+    IF NEW.check_in_date < CURDATE() THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Check-in date cannot be in the past';
+    END IF;
+
+    -- Auto-calculate number of nights
+    SET NEW.number_of_nights = DATEDIFF(NEW.check_out_date, NEW.check_in_date);
+
+    -- Booking conflict detection: same room, overlapping dates
+    SELECT COUNT(*) INTO overlap_count
+    FROM reservations
+    WHERE room_id = NEW.room_id
+      AND reservation_status IN ('Confirmed', 'Checked-In')
+      AND NEW.check_in_date < check_out_date
+      AND NEW.check_out_date > check_in_date;
+
+    IF overlap_count > 0 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Room is already booked for the selected dates';
+    END IF;
 END //
 DELIMITER ;
 
--- ================================================
--- TRIGGER: Update room status after reservation
--- ================================================
+
+-- ============================================================
+-- TRIGGER: after_reservation_insert
+-- Purpose: Updates room availability and creates audit log
+-- ============================================================
 DELIMITER //
 CREATE TRIGGER after_reservation_insert
 AFTER INSERT ON reservations
 FOR EACH ROW
 BEGIN
-    IF NEW.status = 'Confirmed' THEN
-        UPDATE rooms SET status = 'Occupied' 
-            WHERE room_id = NEW.room_id;
+    -- If check-in is today, mark room as unavailable
+    IF NEW.check_in_date = CURDATE() THEN
+        UPDATE rooms SET is_available = 0
+        WHERE room_id = NEW.room_id;
     END IF;
+
+    -- Record action in audit trail
+    INSERT INTO audit_log (
+        user_id, username, action_type,
+        action_description, target_table, target_record_id
+    )
+    VALUES (
+        NEW.created_by,
+        (SELECT username FROM users WHERE user_id = NEW.created_by),
+        'CREATE_RESERVATION',
+        CONCAT('New reservation ', NEW.reservation_number,
+               ' created for guest: ', NEW.guest_name),
+        'reservations',
+        NEW.reservation_id
+    );
 END //
 DELIMITER ;
 
--- ================================================
--- TRIGGER: Update room status on reservation change
--- ================================================
+
+-- ============================================================
+-- TRIGGER: after_reservation_update
+-- Purpose: Handles room availability on status changes
+--   and logs all modifications to the audit trail
+-- ============================================================
 DELIMITER //
 CREATE TRIGGER after_reservation_update
 AFTER UPDATE ON reservations
 FOR EACH ROW
 BEGIN
-    IF NEW.status = 'Checked-Out' 
-        OR NEW.status = 'Cancelled' THEN
-        UPDATE rooms SET status = 'Available' 
-            WHERE room_id = NEW.room_id;
-    ELSEIF NEW.status = 'Confirmed' THEN
-        UPDATE rooms SET status = 'Occupied' 
-            WHERE room_id = NEW.room_id;
+    -- Release room when checked-out or cancelled
+    IF NEW.reservation_status IN ('Checked-Out', 'Cancelled')
+       AND OLD.reservation_status NOT IN ('Checked-Out', 'Cancelled') THEN
+        UPDATE rooms SET is_available = 1
+        WHERE room_id = NEW.room_id;
+    END IF;
+
+    -- Lock room when checked-in
+    IF NEW.reservation_status = 'Checked-In'
+       AND OLD.reservation_status != 'Checked-In' THEN
+        UPDATE rooms SET is_available = 0
+        WHERE room_id = NEW.room_id;
+    END IF;
+
+    -- Log status changes to audit trail
+    IF NEW.reservation_status != OLD.reservation_status THEN
+        INSERT INTO audit_log (
+            user_id, username, action_type,
+            action_description, target_table, target_record_id
+        )
+        VALUES (
+            NEW.created_by,
+            (SELECT username FROM users WHERE user_id = NEW.created_by),
+            'UPDATE_STATUS',
+            CONCAT('Reservation ', NEW.reservation_number,
+                   ' changed from ', OLD.reservation_status,
+                   ' to ', NEW.reservation_status),
+            'reservations',
+            NEW.reservation_id
+        );
     END IF;
 END //
 DELIMITER ;
 
--- ================================================
--- SAMPLE DATA: Users
--- ================================================
-INSERT INTO users (username, password, full_name, email, role, is_first_login) 
-VALUES
-('admin', 'admin123', 'System Administrator', 'admin@oceanviewresort.lk', 'admin', 0),
-('staff1', 'staff123', 'Kamal Perera', 'kamal@oceanviewresort.lk', 'staff', 0),
-('staff2', 'staff123', 'Nimali Silva', 'nimali@oceanviewresort.lk', 'staff', 1);
 
--- ================================================
--- SAMPLE DATA: Rooms
--- ================================================
-INSERT INTO rooms (room_number, room_type, price_per_night, capacity, description) 
+-- ============================================================
+-- SAMPLE DATA: System Users
+-- Passwords are SHA-256 hashed for security
+-- admin / admin123  |  reception1 / recep123
+-- ============================================================
+INSERT INTO users (username, password_hash, full_name, user_role, email_address)
 VALUES
-('101', 'Standard', 5000.00, 2, 'Comfortable standard room with garden view'),
-('102', 'Standard', 5000.00, 2, 'Standard room with garden view'),
-('103', 'Standard', 5500.00, 2, 'Standard room with partial ocean view'),
-('201', 'Deluxe', 8500.00, 2, 'Spacious deluxe room with ocean view'),
-('202', 'Deluxe', 8500.00, 2, 'Deluxe room with balcony and ocean view'),
-('203', 'Deluxe', 9000.00, 3, 'Premium deluxe room with panoramic view'),
-('301', 'Suite', 15000.00, 4, 'Luxury suite with private balcony and ocean view'),
-('302', 'Suite', 18000.00, 4, 'Presidential suite with jacuzzi and terrace'),
-('401', 'Family', 12000.00, 6, 'Large family room with two bedrooms'),
-('402', 'Family', 12000.00, 6, 'Family room with kids play area');
+    ('admin',      SHA2('admin123', 256), 'Resort Manager',  'ADMIN',        'admin@oceanviewresort.lk'),
+    ('reception1', SHA2('recep123', 256), 'Kasun Fernando',  'RECEPTIONIST', 'kasun@oceanviewresort.lk');
 
--- ================================================
--- SAMPLE DATA: Test Reservation
--- ================================================
-INSERT INTO reservations 
-(reservation_number, guest_name, guest_address, contact_number, 
-guest_email, room_id, check_in_date, check_out_date, created_by)
-VALUES 
-('OVR-2025-0001', 'Nimal Jayawardena', 'No 45, Galle Road, Colombo 03',
-'0771234567', 'nimal@gmail.com', 4, '2025-07-10', '2025-07-13', 1);
+
+-- ============================================================
+-- SAMPLE DATA: Room Inventory (14 rooms, 4 floors)
+-- ============================================================
+
+-- Floor 1: Standard Rooms (5 rooms)
+INSERT INTO rooms (room_number, room_type, rate_per_night, is_available, floor_number, max_guests, room_description)
+VALUES
+    ('101', 'Standard',  5500.00,  1, 1, 2, 'Standard room with garden view'),
+    ('102', 'Standard',  5500.00,  1, 1, 2, 'Standard room with garden view'),
+    ('103', 'Standard',  5500.00,  1, 1, 2, 'Standard room with garden view'),
+    ('104', 'Standard',  5500.00,  1, 1, 2, 'Standard room with pool view'),
+    ('105', 'Standard',  5500.00,  1, 1, 2, 'Standard room with pool view');
+
+-- Floor 2: Superior Rooms (4 rooms)
+INSERT INTO rooms (room_number, room_type, rate_per_night, is_available, floor_number, max_guests, room_description)
+VALUES
+    ('201', 'Superior',  8500.00,  1, 2, 2, 'Superior room with partial ocean view'),
+    ('202', 'Superior',  8500.00,  1, 2, 2, 'Superior room with partial ocean view'),
+    ('203', 'Superior',  8500.00,  1, 2, 3, 'Superior room with partial ocean view and extra bed'),
+    ('204', 'Superior',  8500.00,  1, 2, 3, 'Superior room with partial ocean view and extra bed');
+
+-- Floor 3: Premium Rooms (3 rooms)
+INSERT INTO rooms (room_number, room_type, rate_per_night, is_available, floor_number, max_guests, room_description)
+VALUES
+    ('301', 'Premium', 13000.00,  1, 3, 3, 'Premium room with full ocean view and balcony'),
+    ('302', 'Premium', 13000.00,  1, 3, 3, 'Premium room with full ocean view and balcony'),
+    ('303', 'Premium', 13000.00,  1, 3, 3, 'Premium room with full ocean view and private balcony');
+
+-- Floor 4: Executive Suites (2 rooms)
+INSERT INTO rooms (room_number, room_type, rate_per_night, is_available, floor_number, max_guests, room_description)
+VALUES
+    ('401', 'Executive', 22000.00, 1, 4, 4, 'Executive suite with panoramic ocean view and jacuzzi'),
+    ('402', 'Executive', 22000.00, 1, 4, 4, 'Executive suite with panoramic ocean view and private terrace');
+
+
+-- ============================================================
+-- VERIFICATION: Confirm setup is successful
+-- ============================================================
+SELECT '✓ Database setup complete!' AS status;
+SELECT COUNT(*) AS total_users FROM users;
+SELECT COUNT(*) AS total_rooms FROM rooms;
+SELECT GetAvailableRoomCount('ALL') AS all_available;
+SELECT GetAvailableRoomCount('Standard') AS standard_available;
+SELECT GetAvailableRoomCount('Superior') AS superior_available;
+SELECT GetAvailableRoomCount('Premium') AS premium_available;
+SELECT GetAvailableRoomCount('Executive') AS executive_available;

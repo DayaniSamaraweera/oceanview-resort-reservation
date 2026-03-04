@@ -1,99 +1,49 @@
-# ================================================
-# Ocean View Resort - Online Room Reservation System
-# Student: Imasha Samaraweera
-# Module: CIS6003 - Advanced Programming
-# Cardiff Metropolitan University - 2025
-# ================================================
+# ============================================================
+# Ocean View Resort - Git Ignore Configuration
+# Author: Dayani Samaraweera
+# ============================================================
 
-# --------------------------------------------
-# Maven
-# --------------------------------------------
+# --- Maven Build Output ---
 target/
-pom.xml.tagdir/
-pom.xml.releaseBackup
-pom.xml.versionsBackup
-pom.xml.next
-release.properties
-dependency-reduced-pom.xml
-buildNumber.properties
-.mvn/timing.properties
-.mvn/wrapper/maven-wrapper.jar
 
-# --------------------------------------------
-# Eclipse IDE
-# --------------------------------------------
+# --- Eclipse IDE ---
 .project
 .classpath
 .settings/
 bin/
 .metadata/
-*.tmp
-*.bak
-*.swp
-*~.nib
-local.properties
-.loadpath
+*.launch
 .recommenders/
 
-# --------------------------------------------
-# IntelliJ IDEA
-# --------------------------------------------
+# --- IntelliJ IDEA ---
 .idea/
 *.iml
 out/
 
-# --------------------------------------------
-# Compiled Class Files
-# --------------------------------------------
+# --- Apache Tomcat (NEVER push server files) ---
+apache-tomcat-*/
+tomcat/
+servers/
+
+# --- Compiled Java ---
 *.class
+
+# --- Archive Files ---
 *.jar
 *.war
 *.ear
+*.zip
+*.tar.gz
 
-# --------------------------------------------
-# Apache Tomcat - NEVER push!
-# --------------------------------------------
-apache-tomcat-*/
-tomcat/
-catalina.out
-Servers/
-
-# --------------------------------------------
-# Log Files
-# --------------------------------------------
-*.log
-
-# --------------------------------------------
-# OS Generated Files
-# --------------------------------------------
+# --- OS Files ---
 .DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
 Thumbs.db
 desktop.ini
 
-# --------------------------------------------
-# Package Files
-# --------------------------------------------
-*.zip
-*.tar.gz
-*.rar
+# --- Logs ---
+*.log
 
-# --------------------------------------------
-# Environment Variables
-# --------------------------------------------
-.env
-.venv
-
-# --------------------------------------------
-# Backup Files
-# --------------------------------------------
-*.bak
-*.old
-*.orig
-
-# Eclipse Workspace Metadata - NEVER push!
-.metadata/
+# --- Editor Temp Files ---
+*.swp
+*.swo
+*~
