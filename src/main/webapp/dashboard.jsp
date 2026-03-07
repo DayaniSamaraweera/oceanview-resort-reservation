@@ -4,23 +4,7 @@
 <%@ page import="java.util.List" %>
 <%@ page import="java.util.Map" %>
 <%
-    /*
-     * dashboard.jsp - Main Dashboard Page
-     * 
-     * Requirement Traceability: Provides system overview and
-     * quick navigation to all core features.
-     * 
-     * RBAC Layout:
-     * - ADMIN: Image Slider + 4 Stats Cards + 2x2 Room Availability
-     *          Grid + Recent Bookings Table (all bookings)
-     * - RECEPTIONIST: Welcome message + 2x2 Quick Action Buttons
-     *          + Simple Availability Table + Own Recent Bookings
-     * 
-     * Both roles share the Left Sidebar navigation with role-based
-     * menu items (Staff Management and Reports hidden for Receptionist).
-     * 
-     * Author: Dayani Samaraweera
-     */
+
 
     // Get session data
     SystemUser loggedUser = (SystemUser) session.getAttribute("loggedInUser");
@@ -67,11 +51,11 @@
 
     <div class="app-layout">
 
-        <!-- ========== LEFT SIDEBAR ========== -->
+        
         <nav class="sidebar">
             <div class="sidebar-header">
-                <img src="https://i.imgur.com/YOUR_LOGO_ID.png" 
-     alt="Ocean View Resort Logo" 
+                <img src="<%= request.getContextPath() %>/images/resortLogo.png" 
+                     alt="Ocean View Resort Logo"
      style="width: 60px; height: 60px; border-radius: 50%; margin-bottom: 10px;">
                 <p>Resort &amp; Spa, Galle</p>
             </div>
@@ -131,7 +115,7 @@
             </div>
         </nav>
 
-        <!-- ========== MAIN CONTENT ========== -->
+        
         <main class="main-content">
 
             <div class="page-header">
@@ -143,20 +127,19 @@
             </div>
 
             <% if ("ADMIN".equals(userRole)) { %>
-                <!-- ==================== ADMIN DASHBOARD ==================== -->
 
                 <!-- Image Slider -->
                 <div class="image-slider" id="resortSlider">
                     <div class="slide active-slide">
-                        <img src="https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=900" 
-                             alt="Ocean View Resort">
+                        <img src="<%= request.getContextPath() %>/images/slider2.jpeg" 
+                             alt="Resort Beach">
                         <div class="slide-overlay">
                             <h3>Welcome to Ocean View Resort</h3>
                             <p>Luxury beachside hospitality in Galle</p>
                         </div>
                     </div>
                     <div class="slide">
-                        <img src="https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=900" 
+                        <img src="<%= request.getContextPath() %>/images/slider2.jpeg" 
                              alt="Resort Beach">
                         <div class="slide-overlay">
                             <h3>Stunning Ocean Views</h3>
@@ -164,8 +147,8 @@
                         </div>
                     </div>
                     <div class="slide">
-                        <img src="https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=900" 
-                             alt="Hotel Room">
+                        <img src="<%= request.getContextPath() %>/images/slider2.jpeg" 
+                             alt="Resort Beach">
                         <div class="slide-overlay">
                             <h3>Premium Accommodation</h3>
                             <p>From Standard to Executive Suites</p>
@@ -392,7 +375,7 @@
                 <% } %>
             </div>
 
-            <!-- ========== FOOTER ========== -->
+           
             <footer class="app-footer">
                 <p>&copy; 2026 Ocean View Resort. All rights reserved.</p>
                 <p class="footer-address">Beach Road, Unawatuna, Galle, Sri Lanka | +94 91 223 4567</p>

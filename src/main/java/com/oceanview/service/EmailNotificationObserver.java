@@ -13,68 +13,32 @@ import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
-/**
- * Concrete Observer for email notification delivery.
- *
- * <p><b>Design Pattern:</b> Observer (GoF) - This is a concrete
- * observer that sends email notifications when reservation
- * events occur at Ocean View Resort.</p>
- *
- * <p><b>Rubric:</b> "Complex functionality (e.g., email alerts,
- * SMS notifications, innovative features)" - This implementation
- * uses Jakarta Mail (JavaMail API) with Gmail SMTP for sending
- * professional reservation confirmation emails.</p>
- *
- * <p><b>Assumption:</b> If email delivery fails (e.g., invalid
- * email address, SMTP server unavailable), the failure is logged
- * but does not affect the reservation process. Email notification
- * is a non-critical supplementary feature.</p>
- *
- * <p><b>Configuration:</b> To enable actual email sending,
- * update SMTP_USERNAME and SMTP_PASSWORD with valid Gmail
- * credentials. Enable "App Passwords" in Gmail settings.
- * For demonstration purposes, the system logs email content
- * when SMTP credentials are not configured.</p>
- *
- * @author Dayani Samaraweera
- * @version 1.0
- */
+//Concrete Observer for email notification delivery.
+
 public class EmailNotificationObserver implements IReservationObserver {
 
-    /** Logger for email notification events */
+    
     private static final Logger EMAIL_LOGGER =
             Logger.getLogger(EmailNotificationObserver.class.getName());
 
-    /** Gmail SMTP host */
+   
     private static final String SMTP_HOST = "smtp.gmail.com";
 
-    /** Gmail SMTP port for TLS */
+   
     private static final String SMTP_PORT = "587";
 
-    /**
-     * SMTP username - Update with actual Gmail address to enable
-     * real email delivery. Leave as empty string for demo mode.
-     */
+    
     private static final String SMTP_USERNAME = "landorelieflk@gmail.com";
 
-    /**
-     * SMTP password - Use Gmail App Password (not regular password).
-     * Leave as empty string for demo mode (emails will be logged only).
-     */
+    
     private static final String SMTP_PASSWORD = "qgio kmkf cuft qyvp";
 
-    /** Resort name for email branding */
+    
     private static final String RESORT_NAME = "Ocean View Resort";
 
-    /** Resort location for email footer */
+   
     private static final String RESORT_LOCATION = "Galle, Sri Lanka";
 
-    /**
-     * {@inheritDoc}
-     *
-     * <p>Sends a reservation confirmation email to the guest.
-     * If SMTP is not configured, logs the email content instead.</p>
-     */
     @Override
     public void onReservationCreated(GuestReservation reservation) {
 
@@ -98,12 +62,7 @@ public class EmailNotificationObserver implements IReservationObserver {
         sendEmailMessage(guestEmail, subject, emailBody);
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * <p>Sends a status update email to the guest when their
-     * reservation status changes (e.g., Checked-In, Cancelled).</p>
-     */
+ 
     @Override
     public void onReservationStatusChanged(GuestReservation reservation,
                                            String newStatus) {
@@ -126,18 +85,13 @@ public class EmailNotificationObserver implements IReservationObserver {
         sendEmailMessage(guestEmail, subject, emailBody);
     }
 
-    /** {@inheritDoc} */
+   
     @Override
     public String getObserverName() {
         return "EmailNotificationObserver";
     }
 
-    /**
-     * Builds HTML email body for reservation confirmation.
-     *
-     * @param reservation the reservation details
-     * @return the HTML email body string
-     */
+ 
     private String buildConfirmationEmailBody(
             GuestReservation reservation) {
 
@@ -197,13 +151,8 @@ public class EmailNotificationObserver implements IReservationObserver {
         return emailContent.toString();
     }
 
-    /**
-     * Builds HTML email body for status update notification.
-     *
-     * @param reservation the reservation details
-     * @param newStatus the new status
-     * @return the HTML email body string
-     */
+    // Builds HTML email body for status update notification.
+     
     private String buildStatusUpdateEmailBody(
             GuestReservation reservation, String newStatus) {
 
@@ -253,13 +202,8 @@ public class EmailNotificationObserver implements IReservationObserver {
         return emailContent.toString();
     }
 
-    /**
-     * Sends an email message via SMTP or logs it in demo mode.
-     *
-     * @param recipientEmail the recipient's email address
-     * @param subject the email subject
-     * @param htmlBody the HTML email body
-     */
+    //Sends an email message via SMTP or logs it in demo mode.
+    
     private void sendEmailMessage(String recipientEmail,
                                   String subject, String htmlBody) {
 

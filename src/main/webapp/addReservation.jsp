@@ -3,20 +3,6 @@
 <%@ page import="com.oceanview.model.ResortRoom" %>
 <%@ page import="java.util.List" %>
 <%
-    /*
-     * addReservation.jsp - Add New Reservation Page (3-Step Form)
-     *
-     * Requirement Traceability: Implements "Add New Reservation" feature.
-     * Collects: guest name, address, contact number, guest email,
-     * room type, check-in date, check-out date.
-     *
-     * Layout: 3-Step Form
-     * Step 1: Customer Details (name, address, contact, email)
-     * Step 2: Room Type Selection (visual cards with rates)
-     * Step 3: Check-In/Out Dates + Confirmation Summary
-     *
-     * Author: Dayani Samaraweera
-     */
 
     SystemUser loggedUser = (SystemUser) session.getAttribute("loggedInUser");
     if (loggedUser == null) {
@@ -67,7 +53,7 @@
     <!-- ========== LEFT SIDEBAR ========== -->
     <nav class="sidebar">
         <div class="sidebar-header">
-            <img src="https://i.imgur.com/OceanViewLogo.png" alt="Logo"
+            <img src="<%= request.getContextPath() %>/images/resortLogo.png" alt="Logo"
                  style="width:55px;height:55px;border-radius:50%;margin-bottom:8px;border:2px solid rgba(255,255,255,0.3);">
             <h2>Ocean View</h2>
             <p>Resort &amp; Spa, Galle</p>
@@ -106,7 +92,7 @@
         </div>
     </nav>
 
-    <!-- ========== MAIN CONTENT ========== -->
+    
     <main class="main-content">
 
         <div class="page-header">
@@ -184,8 +170,8 @@ pattern="^[a-zA-Z\s]{2,}" title="Minimum 2 characters, letters only" required>  
                     <!-- Standard Room -->
                     <div class="room-option" id="opt-Standard"
                          onclick="selectRoom('Standard', 5500, <%= standardCount %>)">
-                        <img src="https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=400"
-                             alt="Standard Room"
+                       <img src="<%= request.getContextPath() %>/images/room-std.jpeg"
+                         alt="Standard Room"
                              style="width:100%;height:130px;object-fit:cover;border-radius:12px;margin-bottom:10px;">
                         <div class="room-option-name">Standard Room</div>
                         <div class="room-option-rate">
@@ -199,8 +185,8 @@ pattern="^[a-zA-Z\s]{2,}" title="Minimum 2 characters, letters only" required>  
                     <!-- Superior Room -->
                     <div class="room-option" id="opt-Superior"
                          onclick="selectRoom('Superior', 8500, <%= superiorCount %>)">
-                        <img src="https://images.unsplash.com/photo-1590490360182-c33d57733427?w=400"
-                             alt="Superior Room"
+                       <img src="<%= request.getContextPath() %>/images/room-sup.jpeg"
+                         alt="Superior Room"
                              style="width:100%;height:130px;object-fit:cover;border-radius:12px;margin-bottom:10px;">
                         <div class="room-option-name">Superior Room</div>
                         <div class="room-option-rate">
@@ -214,8 +200,8 @@ pattern="^[a-zA-Z\s]{2,}" title="Minimum 2 characters, letters only" required>  
                     <!-- Premium Room -->
                     <div class="room-option" id="opt-Premium"
                          onclick="selectRoom('Premium', 13000, <%= premiumCount %>)">
-                        <img src="https://images.unsplash.com/photo-1591088398332-8a7791972843?w=400"
-                             alt="Premium Room"
+                        <img src="<%= request.getContextPath() %>/images/room-pre.jpeg"
+                         alt="Premium Room"
                              style="width:100%;height:130px;object-fit:cover;border-radius:12px;margin-bottom:10px;">
                         <div class="room-option-name">Premium Room</div>
                         <div class="room-option-rate">
@@ -229,8 +215,8 @@ pattern="^[a-zA-Z\s]{2,}" title="Minimum 2 characters, letters only" required>  
                     <!-- Executive Room -->
                     <div class="room-option" id="opt-Executive"
                          onclick="selectRoom('Executive', 22000, <%= executiveCount %>)">
-                        <img src="https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=400"
-                             alt="Executive Suite"
+                        <img src="<%= request.getContextPath() %>/images/room-exe.jpeg"
+                         alt="Executive Suite"
                              style="width:100%;height:130px;object-fit:cover;border-radius:12px;margin-bottom:10px;">
                         <div class="room-option-name">Executive Suite</div>
                         <div class="room-option-rate">
@@ -368,20 +354,9 @@ Step 3: Check-In &amp; Check-Out Dates
     </main>
 </div>
 
-<!-- ========== EVENT-DRIVEN JAVASCRIPT ========== -->
+
 <script>
-    /*
-     * Event-Driven Architecture: Vanilla JS event listeners
-     * handle all form interactions without page reloads.
-     *
-     * Features:
-     * - Step navigation with validation
-     * - Room type selection highlighting
-     * - Auto-populate specific room dropdown
-     * - Real-time booking summary calculation
-     * - Date validation (check-out after check-in)
-     * - Submit button enable/disable based on form state
-     */
+ 
 
     // State variables
     var currentStep = 1;
@@ -396,10 +371,7 @@ Step 3: Check-In &amp; Check-Out Dates
         'Executive': [<% if (executiveRooms != null) { for (ResortRoom r : executiveRooms) { %>{id:<%= r.getRoomId() %>,num:'<%= r.getRoomNumber() %>',floor:<%= r.getFloorNumber() %>},<% }} %>]
     };
 
-    /**
-     * Navigates between form steps with validation.
-     * @param {number} targetStep - Step to navigate to (1, 2, or 3)
-     */
+    
     function goToStep(targetStep) {
         // Validate before moving forward
         if (targetStep > currentStep) {
@@ -431,10 +403,7 @@ Step 3: Check-In &amp; Check-Out Dates
         window.scrollTo({top: 0, behavior: 'smooth'});
     }
 
-    /**
-     * Validates Step 1 (Guest Details) fields.
-     * @returns {boolean} true if all fields are valid
-     */
+    
     function validateStep1() {
         var guestName = document.getElementById('guestName').value.trim();
         var contact = document.getElementById('contactNumber').value.trim();
@@ -467,10 +436,7 @@ Step 3: Check-In &amp; Check-Out Dates
         return true;
     }
 
-    /**
-     * Validates Step 2 (Room Selection).
-     * @returns {boolean} true if a room is selected
-     */
+    
     function validateStep2() {
         if (!selectedRoomType) {
             alert('Please select a room type before proceeding.');
@@ -486,12 +452,7 @@ Step 3: Check-In &amp; Check-Out Dates
         return true;
     }
 
-    /**
-     * Handles room type selection.
-     * @param {string} roomType - Selected room type
-     * @param {number} ratePerNight - Rate for this room type
-     * @param {number} availableCount - Number of available rooms
-     */
+    
     function selectRoom(roomType, ratePerNight, availableCount) {
         if (availableCount === 0) {
             alert('Sorry, no ' + roomType + ' rooms are available at this time.');
@@ -567,10 +528,7 @@ Step 3: Check-In &amp; Check-Out Dates
         });
     });
 
-    /**
-     * Updates the booking summary panel in Step 3.
-     * Calculates number of nights and estimated total.
-     */
+    
     function updateSummary() {
         var guestName = document.getElementById('guestName').value.trim();
         var contact = document.getElementById('contactNumber').value.trim();

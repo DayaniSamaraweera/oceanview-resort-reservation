@@ -6,46 +6,19 @@ import java.security.NoSuchAlgorithmException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- * Utility class for generating SHA-256 password hashes.
- * 
- * <p><b>Security:</b> Passwords are never stored in plain text.
- * This class produces the same SHA-256 hex output as MySQL's
- * SHA2() function, ensuring compatibility between Java
- * authentication and database-stored hashes.</p>
- * 
- * <p><b>Usage:</b></p>
- * <pre>
- * String hash = PasswordHashGenerator.generateHash("admin123");
- * // Matches: SELECT SHA2('admin123', 256) in MySQL
- * </pre>
- * 
- * @author Dayani Samaraweera
- * @version 1.0
- */
+//Utility class for generating SHA-256 password hashes.
+
 public final class PasswordHashGenerator {
 
-    /** Logger for this utility class */
     private static final Logger HASH_LOGGER =
             Logger.getLogger(PasswordHashGenerator.class.getName());
 
-    /**
-     * Private constructor prevents instantiation.
-     * This is a utility class with only static methods.
-     */
+ 
     private PasswordHashGenerator() {
         throw new UnsupportedOperationException(
                 "PasswordHashGenerator is a utility class and cannot be instantiated");
     }
 
-    /**
-     * Generates a SHA-256 hash of the given plain text password.
-     * The output is a 64-character lowercase hexadecimal string,
-     * identical to MySQL's SHA2(password, 256) function output.
-     *
-     * @param plainTextPassword the password to hash
-     * @return the SHA-256 hex string, or null if hashing fails
-     */
     public static String generateHash(String plainTextPassword) {
 
         if (plainTextPassword == null || plainTextPassword.isEmpty()) {
@@ -80,13 +53,7 @@ public final class PasswordHashGenerator {
         }
     }
 
-    /**
-     * Verifies whether a plain text password matches a stored hash.
-     *
-     * @param plainTextPassword the password to verify
-     * @param storedHash the stored SHA-256 hash to compare against
-     * @return true if the password matches the hash
-     */
+
     public static boolean verifyPassword(String plainTextPassword, String storedHash) {
 
         if (plainTextPassword == null || storedHash == null) {

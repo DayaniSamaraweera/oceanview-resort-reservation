@@ -9,72 +9,30 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- * Service Implementation for reservation booking workflow.
- *
- * <p><b>Architecture:</b> Business Logic Layer - handles reservation
- * validation, creation, retrieval, status management, and
- * cancellation logic. Delegates all database operations to the
- * DAO layer through the IGuestReservationGateway interface.</p>
- *
- * <p><b>Requirement Traceability:</b>
- * - createNewReservation() implements "Add New Reservation"
- * - getReservationDetails() implements "Display Reservation Details"
- * - updateReservationStatus() supports status flow management</p>
- *
- * <p><b>Validation Rules:</b>
- * - Guest name: minimum 2 characters, letters and spaces only
- * - Contact number: 10 digits, starts with 0 (Sri Lankan format)
- * - Check-in date: must be today or future
- * - Check-out date: must be after check-in date
- * - Address: minimum 5 characters</p>
- *
- * @author Dayani Samaraweera
- * @version 1.0
- */
+//Service Implementation for reservation booking workflow.//
+
 public class BookingFlowOrchestratorImpl
         implements IBookingFlowOrchestrator {
 
-    /** Logger for booking flow events */
+   
     private static final Logger BOOKING_LOGGER =
             Logger.getLogger(BookingFlowOrchestratorImpl.class.getName());
 
-    /** DAO dependency for reservation database operations */
+   
     private final IGuestReservationGateway reservationGateway;
 
-    /**
-     * Default constructor using concrete DAO implementation.
-     */
+ 
     public BookingFlowOrchestratorImpl() {
         this.reservationGateway = new GuestReservationGatewayImpl();
     }
 
-    /**
-     * Constructor with injected DAO for Mockito testing.
-     *
-     * @param reservationGateway the DAO implementation (or mock)
-     */
+  
     public BookingFlowOrchestratorImpl(
             IGuestReservationGateway reservationGateway) {
         this.reservationGateway = reservationGateway;
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * <p>Workflow:
-     * 1. Validate all guest and booking details
-     * 2. Generate unique reservation number via stored procedure
-     * 3. Set reservation number on the object
-     * 4. Insert reservation into database
-     * 5. Return the generated reservation ID</p>
-     *
-     * <p>The database trigger before_reservation_insert performs
-     * additional server-side validation:
-     * - Date range validation
-     * - Number of nights calculation
-     * - Booking conflict detection</p>
-     */
+
     @Override
     public int createNewReservation(GuestReservation reservation)
             throws IllegalArgumentException {

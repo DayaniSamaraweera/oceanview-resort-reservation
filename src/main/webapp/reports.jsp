@@ -2,22 +2,7 @@
 <%@ page import="com.oceanview.model.SystemUser" %>
 <%@ page import="java.util.Map" %>
 <%
-    /*
-     * reports.jsp - Decision-Making Reports Page (Admin Only)
-     *
-     * Rubric: "Decision-Making Reports - generate visual data
-     * that specifically facilitates management decision-making"
-     *
-     * Reports:
-     * 1. Occupancy Rate - circle percentage visual
-     * 2. Revenue by Room Type - bar chart (Canvas API)
-     * 3. Reservation Status Breakdown - visual cards
-     * 4. Room Availability by Type - grid
-     *
-     * Export to CSV buttons for offline analysis.
-     *
-     * Author: Dayani Samaraweera
-     */
+ 
 
     SystemUser loggedUser = (SystemUser) session.getAttribute("loggedInUser");
     if (loggedUser == null) {
@@ -84,10 +69,10 @@
 
 <div class="app-layout">
 
-    <!-- ========== LEFT SIDEBAR ========== -->
+   
     <nav class="sidebar">
         <div class="sidebar-header">
-            <img src="https://i.imgur.com/OceanViewLogo.png" alt="Logo"
+            <img src="<%= request.getContextPath() %>/images/resortLogo.png" alt="Logo"
                  style="width:55px;height:55px;border-radius:50%;margin-bottom:8px;
                         border:2px solid rgba(255,255,255,0.3);">
             <h2>Ocean View</h2>
@@ -125,7 +110,7 @@
         </div>
     </nav>
 
-    <!-- ========== MAIN CONTENT ========== -->
+   
     <main class="main-content">
 
         <div class="page-header">
@@ -165,7 +150,7 @@
             </div>
         </div>
 
-        <!-- ========== ROW 2: Occupancy + Revenue Charts ========== -->
+        
         <div style="display:grid; grid-template-columns:1fr 2fr; gap:20px; margin-bottom:25px;">
 
             <!-- Occupancy Rate Circle -->

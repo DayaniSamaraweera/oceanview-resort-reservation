@@ -9,49 +9,25 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Singleton Database Connection Manager for Ocean View Resort.
- *
- * <p><b>Design Pattern:</b> Singleton (Bill Pugh Implementation) -
- * Uses a static inner holder class to achieve thread-safe lazy
- * initialization without synchronization overhead. Only one
- * instance of this manager exists throughout the application
- * lifecycle, providing centralized database connection management.</p>
- *
- * <p><b>Architecture:</b> Part of the Data Access Layer in the
- * 3-Tier Architecture. All DAO classes obtain database connections
- * exclusively through this manager.</p>
- *
- * <p><b>Assumption:</b> Database credentials are stored in
- * database.properties file under src/main/resources/. Each
- * DAO method obtains a new connection and closes it after use
- * to prevent resource leaks.</p>
- *
- * @author Dayani Samaraweera
- * @version 1.0
+ * Singleton database connection manager using Bill Pugh pattern
+ * for thread-safe lazy initialization. All DAOs get connections through here.
  */
 public final class DatabaseConnectionManager {
 
-    /** Logger for database connection events */
+   
     private static final Logger DB_LOGGER =
             Logger.getLogger(DatabaseConnectionManager.class.getName());
 
-    /** JDBC driver class name loaded from properties */
     private final String jdbcDriver;
 
-    /** Database connection URL loaded from properties */
     private final String connectionUrl;
 
-    /** Database username loaded from properties */
     private final String dbUsername;
 
-    /** Database password loaded from properties */
     private final String dbPassword;
 
-    /**
-     * Private constructor prevents external instantiation.
-     * Loads database configuration from database.properties file.
-     * This ensures the Singleton pattern is enforced.
-     */
+ // loads DB config from properties file, private to enforce singleton
+
     private DatabaseConnectionManager() {
         Properties dbProperties = new Properties();
 
@@ -84,37 +60,20 @@ public final class DatabaseConnectionManager {
         }
     }
 
-    /**
-     * Static inner holder class for Bill Pugh Singleton implementation.
-     * The JVM guarantees that the inner class is not loaded until
-     * getInstance() is called, providing lazy initialization.
-     * The class loading mechanism ensures thread safety.
-     */
-    private static class SingletonHolder {
+ // inner class only loads when getInstance() is called - lazy + thread safe
+
+private static class SingletonHolder {
         private static final DatabaseConnectionManager SOLE_INSTANCE =
                 new DatabaseConnectionManager();
     }
 
-    /**
-     * Returns the single instance of DatabaseConnectionManager.
-     * Thread-safe without explicit synchronization due to the
-     * Bill Pugh implementation using a static inner holder class.
-     *
-     * @return the sole DatabaseConnectionManager instance
-     */
+//returns the single instance, thread safe without synchronization
+
     public static DatabaseConnectionManager getInstance() {
         return SingletonHolder.SOLE_INSTANCE;
     }
 
-    /**
-     * Creates and returns a new database connection.
-     * Each DAO method should call this to obtain a connection,
-     * use it for the required operation, and close it in a
-     * finally block or try-with-resources statement.
-     *
-     * @return a new Connection to oceanview_resort_db
-     * @throws SQLException if a database access error occurs
-     */
+ // returns a new DB connection, always close it after use
     public Connection openConnection() throws SQLException {
         Connection newConnection = DriverManager.getConnection(
                 this.connectionUrl, this.dbUsername, this.dbPassword);
@@ -123,13 +82,8 @@ public final class DatabaseConnectionManager {
         return newConnection;
     }
 
-    /**
-     * Safely closes a database connection.
-     * Handles null checks and logs any closure errors
-     * without throwing exceptions to the caller.
-     *
-     * @param connection the connection to close (may be null)
-     */
+ // closes the connection safely, handles null without throwing exceptions
+
     public void closeConnection(Connection connection) {
         if (connection != null) {
             try {
@@ -144,12 +98,8 @@ public final class DatabaseConnectionManager {
         }
     }
 
-    /**
-     * Tests whether the database is reachable.
-     * Used during application startup to verify configuration.
-     *
-     * @return true if a connection can be established
-     */
+ // checks if DB is reachable, used at startup
+
     public boolean testConnection() {
         try (Connection testConn = openConnection()) {
             boolean isValid = testConn != null && !testConn.isClosed();

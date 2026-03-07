@@ -3,37 +3,17 @@ package com.oceanview.dao;
 import com.oceanview.model.ActivityAuditEntry;
 import java.util.List;
 
-/**
- * DAO Interface for ActivityAuditEntry operations.
- *
- * <p><b>Assumption:</b> All significant system actions are logged
- * for security auditing and management accountability.</p>
- *
- * @author Dayani Samaraweera
- * @version 1.0
- */
+//DAO interface for audit log operations.//
+
 public interface IActivityAuditGateway {
 
-    /**
-     * Inserts a new audit trail entry.
-     *
-     * @param entry the ActivityAuditEntry to insert
-     * @return true if insertion was successful
-     */
+	// inserts a new audit entry into the DB
     boolean insertAuditEntry(ActivityAuditEntry entry);
 
-    /**
-     * Retrieves all audit trail entries ordered by most recent.
-     *
-     * @return list of all ActivityAuditEntry objects
-     */
+ // returns all audit entries, newest first
     List<ActivityAuditEntry> findAllAuditEntries();
 
-    /**
-     * Retrieves the most recent audit entries.
-     *
-     * @param limit maximum number of records to return
-     * @return list of recent ActivityAuditEntry objects
-     */
+ // returns most recent audit entries up to the given limit
+
     List<ActivityAuditEntry> findRecentAuditEntries(int limit);
 }

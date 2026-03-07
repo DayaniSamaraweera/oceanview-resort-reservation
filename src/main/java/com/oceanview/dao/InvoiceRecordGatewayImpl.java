@@ -16,41 +16,20 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * DAO Implementation for InvoiceRecord (Bill) database operations.
- *
- * <p><b>Design Pattern:</b> DAO Pattern - Encapsulates all database
- * access logic for the bills table. Uses the MySQL stored procedure
- * CalculateBill to compute billing amounts server-side.</p>
- *
- * <p><b>Requirement Traceability:</b> Directly maps to the
- * "Calculate and Print Bill" feature - computes total stay cost
- * based on number of nights and room rates using the CalculateBill
- * stored procedure.</p>
- *
- * <p><b>Assumption:</b> Bill data is denormalized (guest name,
- * room type stored directly) to preserve an immutable snapshot
- * of billing information at the time of invoice generation.</p>
- *
- * @author Dayani Samaraweera
- * @version 1.0
+ * DAO for bills table. Uses CalculateBill stored procedure to compute amounts.
+ * Bill data is stored as a snapshot so changes to reservations dont affect old bills.
  */
 public class InvoiceRecordGatewayImpl implements IInvoiceRecordGateway {
 
-    /** Logger for invoice gateway operations */
+
     private static final Logger GATEWAY_LOGGER =
             Logger.getLogger(InvoiceRecordGatewayImpl.class.getName());
 
-    /** Singleton database connection manager instance */
+
     private final DatabaseConnectionManager dbManager =
             DatabaseConnectionManager.getInstance();
 
-    /**
-     * Maps a ResultSet row to an InvoiceRecord object.
-     *
-     * @param resultRow the current ResultSet row
-     * @return a populated InvoiceRecord object
-     * @throws SQLException if a column access error occurs
-     */
+ // maps a result set row to an InvoiceRecord object including joined fields
     private InvoiceRecord mapResultSetToBill(ResultSet resultRow)
             throws SQLException {
 
@@ -86,15 +65,7 @@ public class InvoiceRecordGatewayImpl implements IInvoiceRecordGateway {
         return mappedBill;
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * <p>This method performs a multi-step operation:
-     * 1. Calls CalculateBill stored procedure to compute amounts
-     * 2. Retrieves reservation details for denormalized storage
-     * 3. Inserts the complete bill record into the bills table
-     * 4. Returns the fully populated InvoiceRecord</p>
-     */
+
     @Override
     public InvoiceRecord generateAndStoreBill(int reservationId,
                                               int generatedBy) {

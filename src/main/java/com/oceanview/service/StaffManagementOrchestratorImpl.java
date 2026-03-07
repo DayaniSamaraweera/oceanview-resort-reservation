@@ -9,65 +9,31 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- * Service Implementation for staff user management.
- *
- * <p><b>RBAC:</b> This service is accessible only by ADMIN users.
- * The AuthenticationFilter and servlet-level checks enforce
- * this restriction before calling any method here.</p>
- *
- * <p><b>Password Change Flow:</b> When Admin creates a new staff
- * account, mustChangePassword is set to TRUE. On first login,
- * the staff member is redirected to changePassword.jsp and
- * forced to set their own username and password.</p>
- *
- * @author Dayani Samaraweera
- * @version 1.1
- */
+//ervice Implementation for staff user management.
+
 public class StaffManagementOrchestratorImpl
         implements IStaffManagementOrchestrator {
 
-    /** Logger for staff management events */
     private static final Logger STAFF_LOGGER =
             Logger.getLogger(StaffManagementOrchestratorImpl.class.getName());
 
-    /** Minimum acceptable username length for new staff */
     private static final int MIN_USERNAME_LENGTH = 3;
 
-    /** Minimum acceptable password length for new staff */
     private static final int MIN_PASSWORD_LENGTH = 5;
 
-    /** DAO dependency for user database operations */
     private final ISystemUserGateway userGateway;
 
-    /**
-     * Default constructor using concrete DAO implementation.
-     */
+   
     public StaffManagementOrchestratorImpl() {
         this.userGateway = new SystemUserGatewayImpl();
     }
 
-    /**
-     * Constructor with injected DAO for Mockito testing.
-     *
-     * @param userGateway the DAO implementation (or mock)
-     */
+ 
     public StaffManagementOrchestratorImpl(ISystemUserGateway userGateway) {
         this.userGateway = userGateway;
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * <p>Workflow:
-     * 1. Validate all input fields
-     * 2. Hash the temporary password using SHA-256
-     * 3. Build SystemUser with mustChangePassword = TRUE
-     * 4. Delegate to DAO for database insertion
-     *
-     * The new staff member will be forced to change their
-     * temporary credentials on first login.</p>
-     */
+
     @Override
     public boolean createStaffAccount(String username, String plainPassword,
                                       String fullName, String userRole,

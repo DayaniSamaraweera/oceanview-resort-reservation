@@ -3,22 +3,7 @@
 <%@ page import="com.oceanview.model.InvoiceRecord" %>
 <%@ page import="com.oceanview.model.GuestReservation" %>
 <%
-    /*
-     * viewBill.jsp - Calculate and Print Bill Page
-     *
-     * Requirement Traceability: Implements "Calculate and Print Bill"
-     * feature. Displays professional invoice design with:
-     * - Purple header with resort branding
-     * - Itemized billing table
-     * - 0% tax line (Ocean View Resort policy)
-     * - Total amount
-     * - Signature line for printed copies
-     *
-     * Uses CalculateBill stored procedure via BillingController
-     * to compute: subtotal = rate_per_night x number_of_nights
-     *
-     * Author: Dayani Samaraweera
-     */
+
 
     SystemUser loggedUser = (SystemUser) session.getAttribute("loggedInUser");
     if (loggedUser == null) {
@@ -51,10 +36,10 @@
 
 <div class="app-layout">
 
-    <!-- ========== LEFT SIDEBAR ========== -->
+    
     <nav class="sidebar">
         <div class="sidebar-header">
-            <img src="https://i.imgur.com/OceanViewLogo.png" alt="Logo"
+            <img src="<%= request.getContextPath() %>/images/resortLogo.png" alt="Logo"
                  style="width:55px;height:55px;border-radius:50%;margin-bottom:8px;
                         border:2px solid rgba(255,255,255,0.3);">
             <h2>Ocean View</h2>
@@ -94,7 +79,7 @@
         </div>
     </nav>
 
-    <!-- ========== MAIN CONTENT ========== -->
+    
     <main class="main-content">
 
         <div class="page-header">
@@ -112,7 +97,7 @@
         <% } %>
 
         <% if (bill != null) { %>
-        <!-- ========== INVOICE VIEW ========== -->
+        
 
         <!-- Print / Action Buttons -->
         <div class="btn-group" style="margin-bottom:20px;" id="noPrint">
@@ -297,7 +282,8 @@
         </div>
 
         <% } else if (reservation != null) { %>
-        <!-- ========== GENERATE BILL FORM ========== -->
+        
+        
 
         <div class="data-card" style="max-width:600px; margin:0 auto;">
             <h3 style="color:#6c3483; margin-bottom:20px;">
@@ -372,7 +358,7 @@
         </div>
 
         <% } else { %>
-        <!-- ========== NO DATA STATE ========== -->
+       
         <div class="data-card" style="text-align:center; padding:50px; max-width:600px; margin:0 auto;">
             <p style="font-size:3rem;">🧾</p>
             <h3 style="color:#888; margin:15px 0;">No Bill Selected</h3>

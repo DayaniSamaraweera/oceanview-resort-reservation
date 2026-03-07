@@ -18,32 +18,19 @@ import java.util.List;
 import java.util.logging.Logger;
 
 /**
- * REST API Endpoint for reservation search and data retrieval.
- *
- * <p><b>Architecture:</b> Distributed Application - Returns JSON
- * reservation data for AJAX search functionality and dynamic
- * page updates without full page reloads.</p>
- *
- * <p><b>Endpoints:</b>
- * GET /api/reservations - All reservations (JSON)
- * GET /api/reservations?number=RES-2026-00001 - Find by number
- * GET /api/reservations?status=Confirmed - Filter by status
- * GET /api/reservations?action=recent&limit=5 - Recent bookings</p>
- *
- * @author Dayani Samaraweera
- * @version 1.0
- */
+ REST API that returns reservation data as JSON for AJAX search
+ and filtering without page reloads.*/
+
 @WebServlet("/api/reservations")
 public class ReservationSearchAPI extends HttpServlet {
-
-    /** Logger for API events */
+	private static final long serialVersionUID = 1L;
+   
     private static final Logger API_LOGGER =
             Logger.getLogger(ReservationSearchAPI.class.getName());
 
-    /** JSON serialization */
+   
     private Gson gsonSerializer;
 
-    /** Booking service */
     private IBookingFlowOrchestrator bookingService;
 
     @Override
@@ -211,12 +198,8 @@ public class ReservationSearchAPI extends HttpServlet {
         return resObj;
     }
 
-    /**
-     * Builds a JSON array from a list of reservations.
-     *
-     * @param reservations the list to serialize
-     * @return JsonArray with reservation objects
-     */
+   
+ 
     private JsonArray buildReservationListJson(
             List<GuestReservation> reservations) {
 

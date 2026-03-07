@@ -3,16 +3,7 @@
 <%@ page import="com.oceanview.model.GuestReservation" %>
 <%@ page import="java.util.List" %>
 <%
-    /*
-     * listReservations.jsp - Reservation List Page
-     *
-     * Layout: Status filter tabs + Data table
-     * Filter tabs: All | Confirmed | Checked-In | Checked-Out | Cancelled
-     * Table columns: Reservation No. | Guest Name | Room Type |
-     *                Check-In | Check-Out | Nights | Status | Actions
-     *
-     * Author: Dayani Samaraweera
-     */
+
 
     SystemUser loggedUser = (SystemUser) session.getAttribute("loggedInUser");
     if (loggedUser == null) {
@@ -58,7 +49,7 @@
     <!-- ========== LEFT SIDEBAR ========== -->
     <nav class="sidebar">
         <div class="sidebar-header">
-            <img src="https://i.imgur.com/OceanViewLogo.png" alt="Logo"
+            <img src="<%= request.getContextPath() %>/images/resortLogo.png" alt="Logo"
                  style="width:55px;height:55px;border-radius:50%;margin-bottom:8px;border:2px solid rgba(255,255,255,0.3);">
             <h2>Ocean View</h2>
             <p>Resort &amp; Spa, Galle</p>
@@ -97,7 +88,7 @@
         </div>
     </nav>
 
-    <!-- ========== MAIN CONTENT ========== -->
+   
     <main class="main-content">
 
         <div class="page-header">

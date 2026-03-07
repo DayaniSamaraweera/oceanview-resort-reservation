@@ -17,19 +17,11 @@ import java.io.PrintWriter;
 import java.util.List;
 import java.util.logging.Logger;
 
-/**
- * Controller Servlet for exporting reports as CSV files.
- *
- * <p><b>Innovative Feature:</b> Allows management to download
- * reservation and billing data in CSV format for offline
- * analysis in spreadsheet applications.</p>
- *
- * @author Dayani Samaraweera
- * @version 1.0
- */
+//Exports reservation and billing data as CSV files for download.//
+
 @WebServlet("/ExportCSV")
 public class ExportCSVController extends HttpServlet {
-
+	private static final long serialVersionUID = 1L;
     private static final Logger CSV_LOGGER =
             Logger.getLogger(ExportCSVController.class.getName());
 
@@ -139,12 +131,7 @@ public class ExportCSVController extends HttpServlet {
                 + bills.size() + " records");
     }
 
-    /**
-     * Escapes special characters in CSV values.
-     *
-     * @param value the value to escape
-     * @return escaped CSV-safe string
-     */
+ 
     private String escapeCSV(String value) {
         if (value == null) {
             return "";

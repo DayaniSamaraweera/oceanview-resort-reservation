@@ -1,11 +1,4 @@
-/**
- * Ocean View Resort - Central JavaScript
- * 
- * Requirement Traceability: Event-Driven Architecture concepts 
- * using Vanilla JavaScript as per lecturer's instructions.
- * 
- * Author: Dayani Samaraweera
- */
+
 
 document.addEventListener('DOMContentLoaded', function() {
     

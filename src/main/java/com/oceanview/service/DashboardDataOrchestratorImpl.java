@@ -20,47 +20,27 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- * Service Implementation for dashboard statistics and report data.
- *
- * <p><b>Architecture:</b> Business Logic Layer - aggregates data
- * from multiple DAOs to provide comprehensive dashboard statistics
- * and decision-making report data.</p>
- *
- * <p><b>Requirement Traceability:</b>
- * - Dashboard stats cards: total rooms, active bookings, available rooms, revenue
- * - Room availability grid: breakdown by type
- * - Reports: occupancy rate, revenue by room type, status breakdown</p>
- *
- * <p><b>Decision-Making Reports:</b> The revenue by room type and
- * occupancy rate data specifically facilitate management decisions
- * regarding pricing strategy, room allocation, and staffing needs.</p>
- *
- * @author Dayani Samaraweera
- * @version 1.0
- */
+//Service Implementation for dashboard statistics and report data.
+
 public class DashboardDataOrchestratorImpl
         implements IDashboardDataOrchestrator {
 
-    /** Logger for dashboard data events */
     private static final Logger DASHBOARD_LOGGER =
             Logger.getLogger(DashboardDataOrchestratorImpl.class.getName());
 
-    /** DAO dependency for room operations */
+   
     private final IResortRoomGateway roomGateway;
 
-    /** DAO dependency for reservation operations */
+    
     private final IGuestReservationGateway reservationGateway;
 
-    /** DAO dependency for billing operations */
+
     private final IInvoiceRecordGateway invoiceGateway;
 
-    /** Database manager for custom report queries */
+  
     private final DatabaseConnectionManager dbManager;
 
-    /**
-     * Default constructor using concrete DAO implementations.
-     */
+  
     public DashboardDataOrchestratorImpl() {
         this.roomGateway = new ResortRoomGatewayImpl();
         this.reservationGateway = new GuestReservationGatewayImpl();
@@ -68,13 +48,8 @@ public class DashboardDataOrchestratorImpl
         this.dbManager = DatabaseConnectionManager.getInstance();
     }
 
-    /**
-     * Constructor with injected DAOs for Mockito testing.
-     *
-     * @param roomGateway the room DAO (or mock)
-     * @param reservationGateway the reservation DAO (or mock)
-     * @param invoiceGateway the invoice DAO (or mock)
-     */
+    // Constructor with injected DAOs for Mockito testing.//
+    
     public DashboardDataOrchestratorImpl(
             IResortRoomGateway roomGateway,
             IGuestReservationGateway reservationGateway,
@@ -92,10 +67,8 @@ public class DashboardDataOrchestratorImpl
         return allRooms.size();
     }
 
-    /**
-     * {@inheritDoc}
-     * Active bookings include both Confirmed and Checked-In statuses.
-     */
+    //Active bookings include both Confirmed and Checked-In statuses.
+     
     @Override
     public int getActiveBookingCount() {
         int confirmedCount =
@@ -148,10 +121,8 @@ public class DashboardDataOrchestratorImpl
         return availabilityMap;
     }
 
-    /**
-     * {@inheritDoc}
-     * Provides a complete breakdown of reservations across all statuses.
-     */
+    //Provides a complete breakdown of reservations across all statuses.
+     
     @Override
     public Map<String, Integer> getReservationStatusBreakdown() {
         Map<String, Integer> statusMap = new LinkedHashMap<>();
@@ -168,14 +139,6 @@ public class DashboardDataOrchestratorImpl
         return statusMap;
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * <p>Runs a custom aggregate query to calculate total revenue
-     * per room type. This data helps management identify which
-     * room categories generate the most income, supporting
-     * decisions on pricing, marketing, and room allocation.</p>
-     */
     @Override
     public Map<String, Double> getRevenueByRoomType() {
         Map<String, Double> revenueMap = new LinkedHashMap<>();
@@ -220,15 +183,6 @@ public class DashboardDataOrchestratorImpl
         return revenueMap;
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * <p>Occupancy rate formula:
-     * (total rooms - available rooms) / total rooms × 100
-     *
-     * This metric helps management understand current hotel
-     * utilization and plan staffing accordingly.</p>
-     */
     @Override
     public double getOccupancyRate() {
         int totalRooms = getTotalRoomCount();

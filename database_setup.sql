@@ -171,6 +171,7 @@ DELIMITER ;
 -- Purpose: Computes total stay cost based on nights and room rate
 -- Requirement: "Calculate and Print Bill" feature
 -- ============================================================
+
 DELIMITER //
 CREATE PROCEDURE CalculateBill(
     IN  p_reservation_id  INT,

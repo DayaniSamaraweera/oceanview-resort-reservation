@@ -18,29 +18,21 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Controller Servlet for staff management (Admin only).
- *
- * <p><b>RBAC:</b> This controller is accessible only by ADMIN users.
- * The AuthenticationFilter blocks RECEPTIONIST access to this URL.</p>
- *
- * <p><b>Password Change Flow:</b> When Admin creates a staff account,
- * mustChangePassword is set to TRUE. Staff member must change
- * temporary credentials on first login.</p>
- *
- * @author Dayani Samaraweera
- * @version 1.0
- */
+ Handles staff account management, accessible by admin only.
+ New accounts are flagged to force a password change on first login.*/
+
+
 @WebServlet("/StaffManagement")
 public class StaffManagementController extends HttpServlet {
-
-    /** Logger for staff management events */
+	private static final long serialVersionUID = 1L;
+   
     private static final Logger STAFF_LOGGER =
             Logger.getLogger(StaffManagementController.class.getName());
 
-    /** Staff management service */
+   
     private IStaffManagementOrchestrator staffService;
 
-    /** Audit service */
+   
     private IAuditTrailOrchestrator auditService;
 
     @Override

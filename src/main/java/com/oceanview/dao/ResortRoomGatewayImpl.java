@@ -11,35 +11,19 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- * DAO Implementation for ResortRoom database operations.
- *
- * <p><b>Design Pattern:</b> DAO Pattern - Encapsulates all
- * database access logic for the rooms table.</p>
- *
- * <p><b>Requirement Traceability:</b> Supports room availability
- * checks during reservation creation and dashboard statistics.</p>
- *
- * @author Dayani Samaraweera
- * @version 1.0
- */
+// DAO Implementation for ResortRoom database operations.//
+
 public class ResortRoomGatewayImpl implements IResortRoomGateway {
 
-    /** Logger for room gateway operations */
+   
     private static final Logger GATEWAY_LOGGER =
             Logger.getLogger(ResortRoomGatewayImpl.class.getName());
 
-    /** Singleton database connection manager instance */
+    
     private final DatabaseConnectionManager dbManager =
             DatabaseConnectionManager.getInstance();
 
-    /**
-     * Maps a ResultSet row to a ResortRoom object.
-     *
-     * @param resultRow the current ResultSet row
-     * @return a populated ResortRoom object
-     * @throws SQLException if a column access error occurs
-     */
+
     private ResortRoom mapResultSetToRoom(ResultSet resultRow) throws SQLException {
         ResortRoom mappedRoom = new ResortRoom();
         mappedRoom.setRoomId(resultRow.getInt("room_id"));

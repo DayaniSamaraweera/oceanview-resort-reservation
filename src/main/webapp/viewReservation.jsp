@@ -3,20 +3,7 @@
 <%@ page import="com.oceanview.model.GuestReservation" %>
 <%@ page import="com.oceanview.model.InvoiceRecord" %>
 <%
-    /*
-     * viewReservation.jsp - Display Reservation Details Page
-     *
-     * Requirement Traceability: Implements "Display Reservation Details"
-     * feature - retrieves and displays complete booking information
-     * for a specific reservation using GetReservationDetails stored procedure.
-     *
-     * Layout: Two column design
-     * - Left column: Guest information card
-     * - Right column: Room & booking information card
-     * - Bottom: Action buttons (Check-In, Check-Out, Cancel, Generate Bill)
-     *
-     * Author: Dayani Samaraweera
-     */
+ 
 
     SystemUser loggedUser = (SystemUser) session.getAttribute("loggedInUser");
     if (loggedUser == null) {
@@ -48,7 +35,7 @@
     <!-- ========== LEFT SIDEBAR ========== -->
     <nav class="sidebar">
         <div class="sidebar-header">
-            <img src="https://i.imgur.com/OceanViewLogo.png" alt="Logo"
+            <img src="<%= request.getContextPath() %>/images/resortLogo.png" alt="Logo"
                  style="width:55px;height:55px;border-radius:50%;margin-bottom:8px;border:2px solid rgba(255,255,255,0.3);">
             <h2>Ocean View</h2>
             <p>Resort &amp; Spa, Galle</p>
@@ -87,7 +74,7 @@
         </div>
     </nav>
 
-    <!-- ========== MAIN CONTENT ========== -->
+    
     <main class="main-content">
 
         <div class="page-header">
@@ -272,7 +259,7 @@
             </div>
         </div>
 
-        <!-- ========== CANCEL MODAL ========== -->
+        
         <div id="cancelModal"
              style="display:none; position:fixed; top:0; left:0; width:100%; height:100%;
                     background:rgba(0,0,0,0.5); z-index:999; align-items:center; justify-content:center;">

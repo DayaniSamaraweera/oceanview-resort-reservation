@@ -1,10 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" isErrorPage="true"%>
 <%
-    /*
-     * error500.jsp - Custom Server Error Page
-     * Security: Prevents showing Java stack traces to users, 
-     * which is a critical security requirement.
-     */
+    
 %>
 <!DOCTYPE html>
 <html lang="en">

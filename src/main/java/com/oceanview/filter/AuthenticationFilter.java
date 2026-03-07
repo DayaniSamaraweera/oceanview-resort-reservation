@@ -17,25 +17,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
 
-/**
- * Authentication and Authorization Filter for Ocean View Resort.
- *
- * <p><b>RBAC (Role-Based Access Control):</b> This filter intercepts
- * all incoming requests and enforces:
- * 1. Authentication - user must be logged in
- * 2. Authorization - user must have the correct role
- * 3. Password change - new staff must change temp credentials</p>
- *
- * <p><b>Security:</b> Prevents unauthorized URL access. Even if a
- * RECEPTIONIST manually types /StaffManagement or /Reports in the
- * browser, this filter blocks access and redirects to dashboard.</p>
- *
- * <p><b>Requirement Traceability:</b> Implements "User Authentication
- * (Login)" security requirement with role-based redirection.</p>
- *
- * @author Dayani Samaraweera
- * @version 1.0
- */
+//Authentication and Authorization Filter for Ocean View Resort.//
+
 @WebFilter("/*")
 public class AuthenticationFilter implements Filter {
 
@@ -75,16 +58,13 @@ public class AuthenticationFilter implements Filter {
                 "AuthenticationFilter initialized - RBAC security active");
     }
 
-    /**
-     * Main filter logic - intercepts every request.
-     *
-     * <p>Decision flow:
-     * 1. Is it a public path? → Allow through
-     * 2. Is user logged in? → If not, redirect to login
-     * 3. Must user change password? → If yes, redirect to change page
-     * 4. Is it an admin-only path? → Check role, block if RECEPTIONIST
-     * 5. All checks passed → Allow through</p>
-     */
+// checks every request in order:
+// 1. public path → allow
+// 2. not logged in → redirect to login
+// 3. must change password → redirect to change password page
+// 4. admin-only path + receptionist → block
+// 5. all good → allow through
+    
     @Override
     public void doFilter(ServletRequest request, ServletResponse response,
                          FilterChain chain)

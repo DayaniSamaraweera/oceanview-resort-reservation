@@ -3,16 +3,7 @@
 <%@ page import="com.oceanview.model.InvoiceRecord" %>
 <%@ page import="java.util.List" %>
 <%
-    /*
-     * listBills.jsp - Bill List Page
-     *
-     * Layout:
-     * - Summary stats top: Total Bills | Total Revenue
-     * - Data table with all generated bills
-     * - Export to CSV button for decision-making support
-     *
-     * Author: Dayani Samaraweera
-     */
+
 
     SystemUser loggedUser = (SystemUser) session.getAttribute("loggedInUser");
     if (loggedUser == null) {
@@ -48,10 +39,10 @@
 
 <div class="app-layout">
 
-    <!-- ========== LEFT SIDEBAR ========== -->
+    
     <nav class="sidebar">
         <div class="sidebar-header">
-            <img src="https://i.imgur.com/OceanViewLogo.png" alt="Logo"
+            <img src="<%= request.getContextPath() %>/images/resortLogo.png" alt="Logo"
                  style="width:55px;height:55px;border-radius:50%;margin-bottom:8px;
                         border:2px solid rgba(255,255,255,0.3);">
             <h2>Ocean View</h2>
@@ -91,7 +82,7 @@
         </div>
     </nav>
 
-    <!-- ========== MAIN CONTENT ========== -->
+  
     <main class="main-content">
 
         <div class="page-header">

@@ -19,31 +19,20 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 /**
- * Controller Servlet for the dashboard page.
- *
- * <p><b>RBAC:</b> Both ADMIN and RECEPTIONIST access this controller,
- * but different data is loaded based on the role:
- * - ADMIN: Full statistics, all recent bookings, room availability grid
- * - RECEPTIONIST: Basic stats, only own recent bookings</p>
- *
- * <p><b>Requirement Traceability:</b> Dashboard provides an overview
- * of the reservation system status and facilitates quick navigation
- * to core features.</p>
- *
- * @author Dayani Samaraweera
- * @version 1.0
+ * Loads dashboard data based on user role.
+ * Admin sees full stats, receptionist sees limited data.
  */
 @WebServlet("/DashboardController")
 public class DashboardController extends HttpServlet {
-
-    /** Logger for dashboard events */
+	private static final long serialVersionUID = 1L;
+    //Logger for dashboard events
     private static final Logger DASH_LOGGER =
             Logger.getLogger(DashboardController.class.getName());
 
-    /** Dashboard data service */
+    //Dashboard data service
     private IDashboardDataOrchestrator dashboardService;
 
-    /** Booking service for receptionist's own bookings */
+    //Booking service for receptionist's own bookings
     private IBookingFlowOrchestrator bookingService;
 
     @Override

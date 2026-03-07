@@ -1,19 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="com.oceanview.model.SystemUser" %>
 <%
-    /*
-     * help.jsp - Help Section Page
-     *
-     * Requirement Traceability: Implements "Help Section" feature
-     * - Provides guidelines on how to use the reservation system
-     * for new staff members.
-     *
-     * Layout: Accordion/FAQ style
-     * - Click on a question to expand the answer
-     * - Event-Driven: Vanilla JS handles accordion toggle
-     *
-     * Author: Dayani Samaraweera
-     */
+
 
     SystemUser loggedUser = (SystemUser) session.getAttribute("loggedInUser");
     if (loggedUser == null) {
@@ -36,10 +24,10 @@
 
 <div class="app-layout">
 
-    <!-- ========== LEFT SIDEBAR ========== -->
+    
     <nav class="sidebar">
         <div class="sidebar-header">
-            <img src="https://i.imgur.com/OceanViewLogo.png" alt="Logo"
+            <img src="<%= request.getContextPath() %>/images/resortLogo.png" alt="Logo"
                  style="width:55px;height:55px;border-radius:50%;margin-bottom:8px;
                         border:2px solid rgba(255,255,255,0.3);">
             <h2>Ocean View</h2>

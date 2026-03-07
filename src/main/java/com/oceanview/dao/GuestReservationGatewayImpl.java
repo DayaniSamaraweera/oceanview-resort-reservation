@@ -16,45 +16,20 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * DAO Implementation for GuestReservation database operations.
- *
- * <p><b>Design Pattern:</b> DAO Pattern - Encapsulates all database
- * access logic for the reservations table. Uses MySQL stored
- * procedures (GenerateReservationNumber, GetReservationDetails)
- * for complex operations.</p>
- *
- * <p><b>Requirement Traceability:</b>
- * - generateReservationNumber() → "Add New Reservation" (auto-generate unique ID)
- * - insertReservation() → "Add New Reservation" (store booking details)
- * - findReservationByNumber() → "Display Reservation Details"
- * - findAllReservations() → Reservation listing and management
- * - updateReservationStatus() → Status management and cancellation</p>
- *
- * <p><b>Security:</b> All queries use PreparedStatement to prevent
- * SQL injection attacks.</p>
- *
- * @author Dayani Samaraweera
- * @version 1.0
+ * DAO for reservations table. Uses stored procedures for complex queries.
+ * All queries use PreparedStatement to prevent SQL injection.
  */
 public class GuestReservationGatewayImpl implements IGuestReservationGateway {
 
-    /** Logger for reservation gateway operations */
     private static final Logger GATEWAY_LOGGER =
             Logger.getLogger(GuestReservationGatewayImpl.class.getName());
 
-    /** Singleton database connection manager instance */
+
     private final DatabaseConnectionManager dbManager =
             DatabaseConnectionManager.getInstance();
 
-    /**
-     * Maps a ResultSet row to a GuestReservation object.
-     * Handles both basic reservation data and JOIN-populated
-     * display fields (room_number, rate_per_night, created_by_name).
-     *
-     * @param resultRow the current ResultSet row
-     * @return a populated GuestReservation object
-     * @throws SQLException if a column access error occurs
-     */
+ // maps a result set row to a GuestReservation object including joined fields
+
     private GuestReservation mapResultSetToReservation(ResultSet resultRow)
             throws SQLException {
 
@@ -246,12 +221,7 @@ public class GuestReservationGatewayImpl implements IGuestReservationGateway {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     * Calls the MySQL stored procedure GetReservationDetails
-     * which performs a JOIN between reservations, rooms, and users
-     * tables to return complete booking information.
-     */
+ 
     @Override
     public GuestReservation findReservationByNumber(String reservationNumber) {
 
@@ -286,7 +256,7 @@ public class GuestReservationGatewayImpl implements IGuestReservationGateway {
         }
     }
 
-    /** {@inheritDoc} */
+   
     @Override
     public GuestReservation findReservationById(int reservationId) {
 
@@ -322,7 +292,7 @@ public class GuestReservationGatewayImpl implements IGuestReservationGateway {
         }
     }
 
-    /** {@inheritDoc} */
+   
     @Override
     public List<GuestReservation> findAllReservations() {
 
@@ -359,7 +329,7 @@ public class GuestReservationGatewayImpl implements IGuestReservationGateway {
         return allReservations;
     }
 
-    /** {@inheritDoc} */
+   
     @Override
     public List<GuestReservation> findReservationsByStatus(String status) {
 
@@ -401,12 +371,7 @@ public class GuestReservationGatewayImpl implements IGuestReservationGateway {
         return filteredReservations;
     }
 
-    /**
-     * {@inheritDoc}
-     * Updates reservation status. The database trigger
-     * after_reservation_update automatically handles room
-     * availability changes and audit trail logging.
-     */
+
     @Override
     public boolean updateReservationStatus(int reservationId,
                                            String newStatus,
@@ -445,7 +410,7 @@ public class GuestReservationGatewayImpl implements IGuestReservationGateway {
         }
     }
 
-    /** {@inheritDoc} */
+  
     @Override
     public List<GuestReservation> findRecentReservations(int limit) {
 
@@ -482,7 +447,7 @@ public class GuestReservationGatewayImpl implements IGuestReservationGateway {
         return recentReservations;
     }
 
-    /** {@inheritDoc} */
+    
     @Override
     public int getReservationCountByStatus(String status) {
 
@@ -514,7 +479,7 @@ public class GuestReservationGatewayImpl implements IGuestReservationGateway {
         }
     }
 
-    /** {@inheritDoc} */
+    
     @Override
     public List<GuestReservation> findReservationsByCreator(int userId) {
 

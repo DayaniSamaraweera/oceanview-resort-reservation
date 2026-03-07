@@ -8,19 +8,11 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.logging.Logger;
 
-/**
- * Controller Servlet for the Help Section.
- *
- * <p><b>Requirement Traceability:</b> Implements "Help Section"
- * feature - provides guidelines on how to use the reservation
- * system for new staff members.</p>
- *
- * @author Dayani Samaraweera
- * @version 1.0
- */
+//Loads the help/guide page for new staff members.//
 @WebServlet("/HelpController")
-public class HelpController extends HttpServlet {
 
+public class HelpController extends HttpServlet {
+	private static final long serialVersionUID = 1L;
     private static final Logger HELP_LOGGER =
             Logger.getLogger(HelpController.class.getName());
 

@@ -32,13 +32,6 @@ to handle room reservations efficiently, eliminating booking conflicts and delay
 - **Architecture:** 3-Tier (Presentation, Business Logic, Data Access)
 - **Design Patterns:** MVC, Singleton, DAO, Builder, Observer
 
-## Room Categories
-| Room Type | Rate Per Night (LKR) |
-|-----------|---------------------|
-| Standard | 5,500.00 |
-| Superior | 8,500.00 |
-| Premium | 13,000.00 |
-| Executive | 22,000.00 |
 
 ## Setup Instructions
 1. Run `database_setup.sql` in MySQL Workbench

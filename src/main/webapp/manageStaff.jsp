@@ -30,7 +30,7 @@
 
     <nav class="sidebar">
         <div class="sidebar-header">
-            <img src="https://i.imgur.com/OceanViewLogo.png" alt="Logo"
+            <img src="<%= request.getContextPath() %>/images/resortLogo.png" alt="Logo"
                  style="width:55px;height:55px;border-radius:50%;margin-bottom:8px;
                         border:2px solid rgba(255,255,255,0.3);">
             <h2>Ocean View</h2>

@@ -24,39 +24,22 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Controller Servlet for all reservation operations.
- *
- * <p><b>Architecture:</b> MVC Controller in the Presentation Layer.
- * Handles multiple reservation actions via the "action" parameter:
- * - showAddForm: Display the 3-step reservation form
- * - add: Process new reservation submission
- * - list: Display all reservations with status filter
- * - view: Display single reservation details
- * - search: Search reservation by number
- * - updateStatus: Change reservation status</p>
- *
- * <p><b>Requirement Traceability:</b>
- * - "Add New Reservation" → showAddForm + add actions
- * - "Display Reservation Details" → view action
- * - Status management → updateStatus action</p>
- *
- * @author Dayani Samaraweera
- * @version 1.0
- */
+ Handles all reservation operations - add, view, list, search and status update.
+ Action is determined by the "action" request parameter.
+  */
+
 @WebServlet("/ReservationController")
 public class ReservationController extends HttpServlet {
-
-    /** Logger for reservation controller events */
+	private static final long serialVersionUID = 1L;
+    
     private static final Logger RES_LOGGER =
             Logger.getLogger(ReservationController.class.getName());
 
-    /** Booking service dependency */
+   
     private IBookingFlowOrchestrator bookingService;
 
-    /** Room service dependency */
     private IRoomInventoryOrchestrator roomService;
 
-    /** Audit service dependency */
     private IAuditTrailOrchestrator auditService;
 
     @Override
@@ -66,9 +49,8 @@ public class ReservationController extends HttpServlet {
         auditService = new AuditTrailOrchestratorImpl();
     }
 
-    /**
-     * Handles GET requests for displaying pages and data.
-     */
+    //Handles GET requests for displaying pages and data.
+     
     @Override
     protected void doGet(HttpServletRequest request,
                          HttpServletResponse response)
@@ -102,9 +84,9 @@ public class ReservationController extends HttpServlet {
         }
     }
 
-    /**
-     * Handles POST requests for form submissions.
-     */
+    //Handles POST requests for form submissions.
+     
+     
     @Override
     protected void doPost(HttpServletRequest request,
                           HttpServletResponse response)

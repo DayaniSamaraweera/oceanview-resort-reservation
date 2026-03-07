@@ -8,52 +8,27 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- * Service Implementation for audit trail management.
- *
- * <p><b>Architecture:</b> Business Logic Layer - creates audit
- * entries using the Builder pattern and delegates storage to
- * the DAO layer.</p>
- *
- * <p><b>Assumption:</b> The audit trail captures both:
- * 1. Database trigger-generated entries (reservation create/update)
- * 2. Application-level entries (login, bill generation, etc.)
- * This dual-source approach ensures comprehensive tracking.</p>
- *
- * @author Dayani Samaraweera
- * @version 1.0
- */
+//Service Implementation for audit trail management.//
+
 public class AuditTrailOrchestratorImpl implements IAuditTrailOrchestrator {
 
-    /** Logger for audit trail events */
+    
     private static final Logger AUDIT_LOGGER =
             Logger.getLogger(AuditTrailOrchestratorImpl.class.getName());
 
-    /** DAO dependency for audit database operations */
+    
     private final IActivityAuditGateway auditGateway;
 
-    /**
-     * Default constructor using concrete DAO implementation.
-     */
+   
     public AuditTrailOrchestratorImpl() {
         this.auditGateway = new ActivityAuditGatewayImpl();
     }
 
-    /**
-     * Constructor with injected DAO for Mockito testing.
-     *
-     * @param auditGateway the DAO implementation (or mock)
-     */
+
     public AuditTrailOrchestratorImpl(IActivityAuditGateway auditGateway) {
         this.auditGateway = auditGateway;
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * <p>Uses the Builder pattern to construct the
-     * ActivityAuditEntry object before persisting it.</p>
-     */
     @Override
     public void logActivity(int userId, String username,
                             String actionType, String description,
@@ -91,13 +66,13 @@ public class AuditTrailOrchestratorImpl implements IAuditTrailOrchestrator {
         }
     }
 
-    /** {@inheritDoc} */
+ 
     @Override
     public List<ActivityAuditEntry> getAllAuditEntries() {
         return auditGateway.findAllAuditEntries();
     }
 
-    /** {@inheritDoc} */
+
     @Override
     public List<ActivityAuditEntry> getRecentAuditEntries(int limit) {
         if (limit <= 0) {

@@ -12,37 +12,20 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * DAO Implementation for ActivityAuditEntry database operations.
- *
- * <p><b>Design Pattern:</b> DAO Pattern - Encapsulates all
- * database access logic for the audit_log table.</p>
- *
- * <p><b>Assumption:</b> Audit entries are created both by
- * database triggers (after_reservation_insert, after_reservation_update)
- * and by application-level code for actions like login, bill
- * generation, and user management. This dual approach ensures
- * comprehensive activity tracking.</p>
- *
- * @author Dayani Samaraweera
- * @version 1.0
- */
+DAO for audit_log table operations.
+Audit entries are logged both by DB triggers and application code.*/
+
+
 public class ActivityAuditGatewayImpl implements IActivityAuditGateway {
 
-    /** Logger for audit gateway operations */
+   
     private static final Logger GATEWAY_LOGGER =
             Logger.getLogger(ActivityAuditGatewayImpl.class.getName());
 
-    /** Singleton database connection manager instance */
+    
     private final DatabaseConnectionManager dbManager =
             DatabaseConnectionManager.getInstance();
 
-    /**
-     * Maps a ResultSet row to an ActivityAuditEntry object.
-     *
-     * @param resultRow the current ResultSet row
-     * @return a populated ActivityAuditEntry object
-     * @throws SQLException if a column access error occurs
-     */
     private ActivityAuditEntry mapResultSetToAudit(ResultSet resultRow)
             throws SQLException {
 
@@ -66,12 +49,7 @@ public class ActivityAuditGatewayImpl implements IActivityAuditGateway {
         return mappedEntry;
     }
 
-    /**
-     * {@inheritDoc}
-     * Inserts a manual audit entry from application-level actions.
-     * Database triggers handle reservation-related audit entries
-     * automatically.
-     */
+
     @Override
     public boolean insertAuditEntry(ActivityAuditEntry entry) {
 

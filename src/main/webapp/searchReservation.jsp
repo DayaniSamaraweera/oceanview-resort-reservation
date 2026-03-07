@@ -1,17 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="com.oceanview.model.SystemUser" %>
 <%
-    /*
-     * searchReservation.jsp - Find Reservation Page
-     *
-     * Layout: Centered search card with large search icon,
-     * styled input, and recent searches hint.
-     *
-     * Uses AJAX (fetch API) to search via REST API endpoint
-     * for live search results without page reload.
-     *
-     * Author: Dayani Samaraweera
-     */
+ 
 
     SystemUser loggedUser = (SystemUser) session.getAttribute("loggedInUser");
     if (loggedUser == null) {
@@ -36,10 +26,10 @@
 
 <div class="app-layout">
 
-    <!-- ========== LEFT SIDEBAR ========== -->
+   
     <nav class="sidebar">
         <div class="sidebar-header">
-            <img src="https://i.imgur.com/OceanViewLogo.png" alt="Logo"
+            <img src="<%= request.getContextPath() %>/images/resortLogo.png" alt="Logo"
                  style="width:55px;height:55px;border-radius:50%;margin-bottom:8px;border:2px solid rgba(255,255,255,0.3);">
             <h2>Ocean View</h2>
             <p>Resort &amp; Spa, Galle</p>
@@ -78,7 +68,7 @@
         </div>
     </nav>
 
-    <!-- ========== MAIN CONTENT ========== -->
+    
     <main class="main-content">
 
         <div class="page-header">
@@ -180,11 +170,7 @@
             }, 400);
         });
 
-        /**
-         * Performs a live search via the REST API endpoint.
-         * Uses fetch() for asynchronous JSON data retrieval.
-         * @param {string} searchTerm - Reservation number to search
-         */
+        
         function performLiveSearch(searchTerm) {
             liveResults.style.display = 'block';
             liveResults.innerHTML = '<p style="color:#888; font-size:0.9rem;">🔄 Searching...</p>';
@@ -238,11 +224,7 @@
                 });
         }
 
-        /**
-         * Returns color scheme for a reservation status badge.
-         * @param {string} status - The reservation status
-         * @returns {object} Object with bg and text color strings
-         */
+        
         function getStatusColor(status) {
             var colors = {
                 'Confirmed':   { bg: '#e8f8f0', text: '#27ae60' },

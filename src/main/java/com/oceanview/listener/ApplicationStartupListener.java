@@ -9,22 +9,8 @@ import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
 import java.util.logging.Logger;
 
-/**
- * Application startup and shutdown listener.
- *
- * <p><b>Purpose:</b> Initializes critical system components when
- * the Ocean View Resort application starts on Tomcat:
- * 1. Tests database connectivity
- * 2. Registers Observer pattern observers
- * 3. Logs system startup status</p>
- *
- * <p><b>Design Pattern:</b> Observer Pattern initialization -
- * The EmailNotificationObserver is registered with the
- * ReservationEventNotifier on application startup.</p>
- *
- * @author Dayani Samaraweera
- * @version 1.0
- */
+//Application startup and shutdown listener.//
+ 
 @WebListener
 public class ApplicationStartupListener
         implements ServletContextListener {

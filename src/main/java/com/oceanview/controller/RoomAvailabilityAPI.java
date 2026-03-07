@@ -18,35 +18,19 @@ import java.util.List;
 import java.util.logging.Logger;
 
 /**
- * REST API Endpoint for room availability data.
- *
- * <p><b>Architecture:</b> Distributed Application - This servlet
- * returns JSON responses instead of forwarding to JSP pages.
- * Strictly separated from page-navigation servlets.</p>
- *
- * <p><b>Endpoints:</b>
- * GET /api/rooms - All rooms with availability
- * GET /api/rooms?type=Standard - Rooms filtered by type
- * GET /api/rooms?action=counts - Availability counts per type</p>
- *
- * <p><b>Usage:</b> Called by JavaScript fetch() on the frontend
- * for dynamic room availability updates without page reload
- * (Event-Driven Architecture).</p>
- *
- * @author Dayani Samaraweera
- * @version 1.0
- */
+ REST API that returns room availability data as JSON.
+ Used by frontend JavaScript for dynamic updates without page reload. */
+
 @WebServlet("/api/rooms")
 public class RoomAvailabilityAPI extends HttpServlet {
-
-    /** Logger for API events */
+	private static final long serialVersionUID = 1L;
+   
     private static final Logger API_LOGGER =
             Logger.getLogger(RoomAvailabilityAPI.class.getName());
 
-    /** JSON serialization library */
+   
     private Gson gsonSerializer;
 
-    /** Room service dependency */
     private IRoomInventoryOrchestrator roomService;
 
     @Override

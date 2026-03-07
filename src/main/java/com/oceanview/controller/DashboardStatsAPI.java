@@ -18,38 +18,19 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 /**
- * REST API Endpoint for dashboard statistics and report data.
- *
- * <p><b>Architecture:</b> Distributed Application - Returns JSON
- * data consumed by JavaScript for rendering dashboard charts
- * and statistics cards dynamically.</p>
- *
- * <p><b>Endpoints:</b>
- * GET /api/dashboard - All dashboard statistics
- * GET /api/dashboard?action=revenue - Revenue by room type
- * GET /api/dashboard?action=occupancy - Occupancy rate</p>
- *
- * <p><b>Rubric:</b> "Decision-Making Reports - generate visual
- * data that specifically facilitates management decision-making"
- * This API provides the data for Canvas API charts.</p>
- *
- * @author Dayani Samaraweera
- * @version 1.0
+ REST API that returns JSON data for dashboard charts and stats.
+ Supports revenue by room type and occupancy rate endpoints.
  */
 @WebServlet("/api/dashboard")
 public class DashboardStatsAPI extends HttpServlet {
-
-    /** Logger for API events */
+	private static final long serialVersionUID = 1L;
     private static final Logger API_LOGGER =
             Logger.getLogger(DashboardStatsAPI.class.getName());
 
-    /** JSON serialization */
     private Gson gsonSerializer;
 
-    /** Dashboard service */
     private IDashboardDataOrchestrator dashboardService;
 
-    /** Billing service */
     private IBillingOrchestrator billingService;
 
     @Override

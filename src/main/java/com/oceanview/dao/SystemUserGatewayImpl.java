@@ -11,37 +11,19 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- * DAO Implementation for SystemUser database operations.
- *
- * <p><b>Design Pattern:</b> DAO Pattern - Encapsulates all
- * database access logic for the users table. Uses PreparedStatement
- * exclusively to prevent SQL injection attacks.</p>
- *
- * <p><b>Security:</b> Password comparison uses SHA-256 hashed
- * values. Plain text passwords never reach this layer.</p>
- *
- * @author Dayani Samaraweera
- * @version 1.1
- */
+//DAO Implementation for SystemUser database operations.//
+
 public class SystemUserGatewayImpl implements ISystemUserGateway {
 
-    /** Logger for user gateway operations */
+   
     private static final Logger GATEWAY_LOGGER =
             Logger.getLogger(SystemUserGatewayImpl.class.getName());
 
-    /** Singleton database connection manager instance */
+ 
     private final DatabaseConnectionManager dbManager =
             DatabaseConnectionManager.getInstance();
 
-    /**
-     * Maps a ResultSet row to a SystemUser object.
-     * Includes the must_change_password flag for first-login flow.
-     *
-     * @param resultRow the current ResultSet row
-     * @return a populated SystemUser object
-     * @throws SQLException if a column access error occurs
-     */
+ 
     private SystemUser mapResultSetToUser(ResultSet resultRow) throws SQLException {
         SystemUser mappedUser = new SystemUser();
         mappedUser.setUserId(resultRow.getInt("user_id"));

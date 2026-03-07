@@ -1,23 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="com.oceanview.model.SystemUser" %>
 <%
-    /*
-     * changePassword.jsp - First Login Password Change Page
-     * 
-     * Purpose: When Admin creates a new staff account with temporary
-     * credentials, the staff member is forced to change their username
-     * and password on first login before accessing the dashboard.
-     * 
-     * Flow:
-     * 1. Admin creates staff account (mustChangePassword = true)
-     * 2. Staff logs in with temporary credentials
-     * 3. AuthenticationFilter redirects to this page
-     * 4. Staff sets new username and password
-     * 5. ChangePasswordController updates DB and resets flag
-     * 6. Staff is redirected to dashboard
-     * 
-     * Author: Dayani Samaraweera
-     */
+
 
     // Get logged-in user from session
     SystemUser currentUser = (SystemUser) session.getAttribute("loggedInUser");

@@ -16,30 +16,14 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.logging.Logger;
 
-/**
- * Controller Servlet handling user login and logout.
- *
- * <p><b>Architecture:</b> Presentation Layer (MVC Controller) -
- * Receives login form data, delegates authentication to the
- * Service layer, manages HTTP sessions and cookies, and
- * redirects based on user role and password change status.</p>
- *
- * <p><b>Requirement Traceability:</b> Implements "User Authentication
- * (Login)" and "Exit System" features.</p>
- *
- * <p><b>Security Features:</b>
- * - SHA-256 password hashing via service layer
- * - Session-based authentication
- * - Remember Me cookie support
- * - Audit trail logging for login/logout events
- * - First-login password change enforcement</p>
- *
- * @author Dayani Samaraweera
- * @version 1.0
- */
+/**Handles user login and logout.
+Authenticates credentials, manages sessions and remember-me cookies,
+and redirects based on role. Forces password change on first login. */
+
+
 @WebServlet("/LoginController")
 public class LoginController extends HttpServlet {
-
+	private static final long serialVersionUID = 1L;
     /** Logger for login events */
     private static final Logger LOGIN_LOGGER =
             Logger.getLogger(LoginController.class.getName());

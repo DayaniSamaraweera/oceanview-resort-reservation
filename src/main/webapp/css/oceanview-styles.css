@@ -40,7 +40,7 @@ h1, h2, h3, h4, h5, h6 {
 .login-left-panel {
     flex: 1;
     background: linear-gradient(135deg, rgba(108, 52, 131, 0.85), rgba(142, 68, 173, 0.85)),
-                url('https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800') center/cover no-repeat;
+                url('../images/login-bg.jpeg') center/cover no-repeat;
     display: flex;
     flex-direction: column;
     justify-content: center;

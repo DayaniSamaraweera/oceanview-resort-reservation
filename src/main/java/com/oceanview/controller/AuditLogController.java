@@ -13,20 +13,19 @@ import java.io.IOException;
 import java.util.List;
 import java.util.logging.Logger;
 
-/**
- * Controller Servlet for activity audit log (Admin only).
- *
- * @author Dayani Samaraweera
- * @version 1.0
- */
+
+
+//this servlet handles the audit log page, only admin can access this
 @WebServlet("/AuditLog")
 public class AuditLogController extends HttpServlet {
-
+	private static final long serialVersionUID = 1L;
+	
+	// logger to print info messages to server console for debugging
     private static final Logger AUDIT_LOGGER =
             Logger.getLogger(AuditLogController.class.getName());
 
     private IAuditTrailOrchestrator auditService;
-
+ // using interface type so we can swap implementation later if needed
     @Override
     public void init() throws ServletException {
         auditService = new AuditTrailOrchestratorImpl();

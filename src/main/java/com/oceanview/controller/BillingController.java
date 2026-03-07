@@ -21,19 +21,12 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- * Controller Servlet for billing and invoice operations.
- *
- * <p><b>Requirement Traceability:</b> Implements "Calculate and
- * Print Bill" feature. Uses the CalculateBill stored procedure
- * to compute total stay cost based on nights and room rates.</p>
- *
- * @author Dayani Samaraweera
- * @version 1.0
- */
+//Controller Servlet for billing and invoice operations.
+ 
 @WebServlet("/BillingController")
 public class BillingController extends HttpServlet {
-
+	
+	private static final long serialVersionUID = 1L;
     /** Logger for billing events */
     private static final Logger BILL_LOGGER =
             Logger.getLogger(BillingController.class.getName());

@@ -15,31 +15,21 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 /**
- * Controller Servlet for decision-making reports (Admin only).
- *
- * <p><b>Rubric:</b> "Decision-Making Reports - generate visual
- * data that specifically facilitates management decision-making"</p>
- *
- * <p><b>Reports provided:</b>
- * - Occupancy Rate (percentage of occupied rooms)
- * - Revenue by Room Type (which types earn most)
- * - Reservation Status Breakdown (booking patterns)
- * - Room Availability by Type (current inventory)</p>
- *
- * @author Dayani Samaraweera
- * @version 1.0
- */
+ Loads report data for admin decision-making.
+ Includes occupancy rate, revenue by room type,
+ booking patterns and room availability.*/
+
 @WebServlet("/ReportController")
 public class ReportController extends HttpServlet {
-
-    /** Logger for report events */
+	private static final long serialVersionUID = 1L;
+    
     private static final Logger REPORT_LOGGER =
             Logger.getLogger(ReportController.class.getName());
 
-    /** Dashboard data service for aggregated statistics */
+    
     private IDashboardDataOrchestrator dashboardService;
 
-    /** Billing service for revenue data */
+   
     private IBillingOrchestrator billingService;
 
     @Override

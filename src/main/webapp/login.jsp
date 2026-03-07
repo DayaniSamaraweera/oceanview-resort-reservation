@@ -1,23 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%
-    /*
-     * login.jsp - Ocean View Resort Login Page
-     * 
-     * Requirement Traceability: Implements "User Authentication (Login)"
-     * feature - requires username and password for secure system access.
-     * 
-     * Layout: Split screen design
-     * - Left panel: Hotel branding image with overlay text
-     * - Right panel: Sign in form with Remember Me cookie support
-     * 
-     * Security Features:
-     * - Form submits to LoginController servlet via POST
-     * - Password is hashed server-side using SHA-256
-     * - Remember Me cookie stores username for 7 days
-     * - Error messages displayed for invalid credentials
-     * 
-     * Author: Dayani Samaraweera
-     */
+
 
     // Check if user is already logged in - redirect to dashboard
     if (session.getAttribute("loggedInUser") != null) {
@@ -54,15 +37,14 @@
 
     <div class="login-container">
 
-        <!-- ========== LEFT PANEL: Hotel Branding ========== -->
+       
         <div class="login-left-panel">
-            <img src="https://i.imgur.com/OceanViewLogo.png" alt="Ocean View Resort Logo" style="width: 100px; height: 100px; border-radius: 50%; margin-bottom: 15px; border: 3px solid rgba(255,255,255,0.3);">
-            <h1>Ocean View Resort</h1>
+<img src="<%= request.getContextPath() %>/images/resortLogo.png" alt="Ocean View Resort Logo" style="width: 100px; height: 100px; border-radius: 50%; margin-bottom: 15px; border: 3px solid rgba(255,255,255,0.3); object-fit: cover; background: white;">            <h1>Ocean View Resort</h1>
             <p>Experience luxury by the ocean in beautiful Galle, Sri Lanka. 
                Your gateway to serene beachside hospitality.</p>
         </div>
 
-        <!-- ========== RIGHT PANEL: Sign In Form ========== -->
+       
         <div class="login-right-panel">
             <div class="login-form-wrapper">
 
@@ -128,7 +110,8 @@
 
     </div>
 
-    <!-- Event-Driven: Focus username field on page load -->
+   
+    
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             var usernameField = document.getElementById('username');
